@@ -19,9 +19,14 @@
         </div>
       </div>
       <form action="/signin" method="post" class="signup-form">
-        <input type="text" id="username" name="username" placeholder="username" required autocomplete="off" />
+        <% if (messages.error) { %>
+          <div class="alert-danger">
+            <strong class="error"><%= messages.error %> </strong>
+          </div>
+        <% } %> 
+        <input type="text" id="name" name="name" placeholder="Name" required autocomplete="off" />
+        <input type="email" id="email" name="email" placeholder="Email" required />
         <input type="password" id="password" name="password" placeholder="password" required />
-        <input type="password" id="confirmpassword" name="confirmpassword" placeholder="confirm password" required />
         <button type="submit">Sign In</button>
         <p class="message">Already have account? <a href="/login">Go To Login</a></p>
       </form>

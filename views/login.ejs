@@ -18,7 +18,12 @@
         </div>
       </div>
       <form action="/login" method="post" class="login-form">
-        <input type="text" id="name" name= "username" placeholder="username" required autocomplete="off"/>
+        <% if (messages.error) { %>
+          <div class="alert-danger">
+            <strong class="error"><%= messages.error %> </strong>
+          </div>
+        <% } %> 
+        <input type="email" id="email" name= "email" placeholder="email" required autocomplete="off"/>
         <input type="password" id="password" name= "password" placeholder="password" required/>
         <button type="submit" id="loginbutton"> log in</button>
         <p class="message">Not registered? <a href="/signin">Create an account</a></p>

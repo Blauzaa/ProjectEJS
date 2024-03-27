@@ -75,5 +75,13 @@ a {
     color: #0A1D56;
     text-decoration: none;
 }
-
-    
+.error{
+    color: red;
+}
+.alert-danger{
+    background-color: #fabbbb;
+    margin:  15px 0;
+}
+.alert-danger .error{
+    color: red;
+}
