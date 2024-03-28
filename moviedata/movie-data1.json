@@ -1,0 +1,83 @@
+[
+    {
+      "name": "All Of Us Are Dead",
+      "rating": 8.8,
+      "genre": "Action, Romance, Zombie Apocalypse",
+      "harga": 7.50,
+      "poster": "./allofusaredead.jpg",
+      "video": "./video.mp4"
+    },
+    {
+      "name": "Duty After School",
+      "rating": 9.2,
+      "genre": "Military Sci-fi, Comedy, Coming-of-age",
+      "harga": 5.00,
+      "poster": "./dutyafterschool.jpg",
+      "video": "./video.mp4"
+    },
+    {
+      "name": "Happiness",
+      "rating": 7.5, 
+      "genre": "Horror, Romance, Thrilling, Drama, Action, Mystery",
+      "harga": 8.00,
+      "poster": "./happiness.jpg",
+      "video": "./video.mp4"
+    },
+    {
+      "name": "Island",
+      "rating": 8.6,
+      "genre": "Action, Horror, Drama, Adventure, Fantasy, Thrilling",
+      "harga": 6.00,
+      "poster": "./island.jpg",
+      "video": "./video.mp4"
+    },
+    {
+      "name": "Kingdom",
+      "rating": 9.1, 
+      "genre": "Horror, Action Thriller, Drama, Mystery",
+      "harga": 7.50,
+      "poster": "./kingdom.jpg",
+      "video": "./video.mp4"
+    },
+    {
+      "name": "Money Heist Korea",
+      "rating": 9.50,
+      "genre": "Heist, Detective, Fiction Criminal, Police Procedure",
+      "harga": 9.50,
+      "poster": "./moneyheistkorea.jpg",
+      "video": "./video.mp4"
+    },
+    {
+      "name": "My Demon",
+      "rating": 7.3, 
+      "genre": "Drama, Rom-Com, Action, Fantasy",
+      "harga": 10.00,
+      "poster": "./mydemon.jpg",
+      "video": "./video.mp4"
+    },
+    {
+      "name": "Squid Game",
+      "rating": 6.50,
+      "genre": "Action, Thrilling, Drama, Comedy",
+      "harga": 6.50,
+      "poster": "./squidgame.jpg",
+      "video": "./video.mp4"
+    },
+    {
+      "name": "Sweet Home",
+      "rating": 8.6,
+      "genre": "Horror, Action, Drama, Thrilling",
+      "harga": 4.90,
+      "poster": "./sweethome.jpg",
+      "video": "./video.mp4"
+    },
+    {
+      "name": "Once Upon a Small Town",
+      "rating": 7.0,
+      "genre": "Rom-Com, Drama, Biography",
+      "harga": 2.00,
+      "poster": "./OnceUponASmallTown.jpeg",
+      "video": "./video.mp4"
+    }
+  ]
+  

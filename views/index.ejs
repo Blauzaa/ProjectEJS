@@ -18,7 +18,21 @@
     <section class="home swiper" id="home">
         <div class="swiper-wrapper">
 
-            <div class="swiper-slide container">
+            <% for (const movie of mainMovies) { %>
+                <div class="swiper-slide container">
+                
+                    <img src="img/<%= movie.poster %>" alt="<%= movie.name %>">
+                    <div class="home-text">
+                        <span><%= movie.genre %></span>
+                        <h1><%= movie.name %></h1>
+                        <a href="" class="btn"> Watch now</a>
+                        <a href="" class="play">
+                            <i class='bx bx-play' ></i>
+                        </a>
+                    </div>
+                </div>
+            <% } %>
+            <!-- <div class="swiper-slide container">
                 
                 <img src="img/Youth Of May.jpg">
                 <div class="home-text">
@@ -55,7 +69,7 @@
                         <i class='bx bx-play' ></i>
                     </a>
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="swiper-pagination"></div>
     </section>
@@ -64,7 +78,18 @@
         <h2 class="heading"> On Trending</h2>
         <div class="movies-container">
             
-
+            <% for (const movie of movies) { %>
+                <div class="box">
+                  <div class="box-img">
+                    <a href="/buy"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                  </div>
+                  <h3><%= movie.name %></h3>
+                  <span><%= movie.rating %> | <%= movie.genre %></span>
+                  <% if (movie.harga > 0) { %>  <h4>$<%= movie.harga %></h4>
+                  <% } %>
+                </div>
+              <% } %>
+<!-- 
                 <div class="box">
                     <div class="box-img">
                         <a href="/buy"><img src="img/allofusaredead.jpg" alt=""></a>
@@ -163,7 +188,7 @@
                     <h3>Once Upon a Small Town</h3>
                     <span>1 Season | Rom-Com, Drama, Biography </span>
                     <h4>$2.00</h4>
-                </div>
+                </div> -->
 
             
         </div>
@@ -173,7 +198,21 @@
         <h2 class="heading">Coming soon</h2>
         <div class="coming-container swiper">
             <div class="swiper-wrapper">
-                <div class="swiper-slide box">
+
+                <% for (const movie of comingSoon) { %>
+                    <div class="swiper-slide box">
+                      <div class="box-img">
+                        <a href="/comingsoon"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                      </div>
+                      <h3><%= movie.name %></h3>
+                      <span><%= movie.rating %> | <%= movie.genre %></span>
+                      <% if (movie.harga > 0) { %>  <h4>$<%= movie.harga %></h4>
+                      <% } %>
+                    </div>
+                  <% } %>
+
+
+                <!-- <div class="swiper-slide box">
                     <div class="box-img">
                         <a href="/comingsoon"><img src="img/truebeauty.jpg" alt=""></a>
                         
@@ -181,7 +220,7 @@
                     <h3>True Beauty</h3>
                     <span>1 Season | Romance, Drama, Coming-of-age, Comedy </span>
                     <h4>$1.45</h4>
-                </div>
+                </div> 
     
                 <div class="swiper-slide box">
                     <div class="box-img">
@@ -271,7 +310,7 @@
                     <h3>Itaewon Class</h3>
                     <span>1 Season| Romance, Comedy, Drama </span>
                     <h4>$2.222</h4>
-                </div>
+                </div>  -->
             </div>
             
     </section>
@@ -282,7 +321,19 @@
         <h2 class="heading">Free Movies</h2>
         <div class="free-container swiper">
             <div class="swiper-wrapper">
-                <div class="swiper-slide box">
+
+                <% for (const movie of freeMovies) { %>
+                    <div class="swiper-slide box">
+                      <div class="box-img">
+                        <a href="/watch"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                      </div>
+                      <h3><%= movie.name %></h3>
+                      <span><%= movie.rating %> Season | <%= movie.genre %></span>
+                      <h4>$<%= movie.harga %></h4>
+                    </div>
+                  <% } %>
+
+                <!-- <div class="swiper-slide box">
                     <div class="box-img">
                         <a href="/watch"><img src="img/Goblin.jpeg" alt=""></a>
                         
@@ -380,7 +431,7 @@
                     <h3>18 Again</h3>
                     <span>1 Season | Romance, Slice of Life </span>
                     <h4>Free</h4>
-                </div>
+                </div> -->
             </div>
             
     </section>
