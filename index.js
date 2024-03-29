@@ -224,6 +224,47 @@ app.get('/', async (req, res) => {
     }
   });
 
+  app.get('/watch', async (req, res) => {
+    try {
+      const movies = await getMovies();
+      const comingSoon = await getComingSoonMovies();
+      const freeMovies = await getFreeMovies();
+      const mainMovies = await getMainMovies();
+      const isLoggedIn = !!req.user; // Check if user is logged in
+      res.render('watch', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn }); // Pass movie data to the template
+    } catch (error) {
+      console.error(error);
+      res.render('error'); // Handle errors appropriately
+    }
+  });
+
+  app.get('/comingsoon', async (req, res) => {
+    try {
+      const movies = await getMovies();
+      const comingSoon = await getComingSoonMovies();
+      const freeMovies = await getFreeMovies();
+      const mainMovies = await getMainMovies();
+      const isLoggedIn = !!req.user; // Check if user is logged in
+      res.render('comingsoon', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn }); // Pass movie data to the template
+    } catch (error) {
+      console.error(error);
+      res.render('error'); // Handle errors appropriately
+    }
+  });
+
+  app.get('/buy', async (req, res) => {
+    try {
+      const movies = await getMovies();
+      const comingSoon = await getComingSoonMovies();
+      const freeMovies = await getFreeMovies();
+      const mainMovies = await getMainMovies();
+      const isLoggedIn = !!req.user; // Check if user is logged in
+      res.render('buy', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn }); // Pass movie data to the template
+    } catch (error) {
+      console.error(error);
+      res.render('error'); // Handle errors appropriately
+    }
+  });
 
 //ejs
 app.set('view engine', 'ejs');
