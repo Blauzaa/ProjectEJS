@@ -201,6 +201,14 @@ app.post("/login", passport.authenticate("local", {
     failureFlash: true
 }));
 
+app.get('/logout', (req, res) => {
+  req.logout(() => {
+      req.session.destroy(() => {
+          req.app.locals.isLoggedIn = false; // Set isLoggedIn to false in application locals
+          res.redirect('/'); // Redirect to the homepage after logout
+      });
+  });
+});
 
 app.get('/', async (req, res) => {
     try {
@@ -208,7 +216,8 @@ app.get('/', async (req, res) => {
       const comingSoon = await getComingSoonMovies();
       const freeMovies = await getFreeMovies();
       const mainMovies = await getMainMovies();
-      res.render('index', { movies, comingSoon, freeMovies , mainMovies }); // Pass movie data to the template
+      const isLoggedIn = !!req.user; // Check if user is logged in
+      res.render('index', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn }); // Pass movie data to the template
     } catch (error) {
       console.error(error);
       res.render('error'); // Handle errors appropriately
@@ -240,7 +249,9 @@ app.get('/login', (req, res) => {
 app.get('/signin', (req, res) => {
     res.render('signin');
     });
-
+app.get('/logout', (req, res) => {
+    res.render('logout');
+    });
 app.get('/watch', (req, res) => {
     res.render('watch');
     });

@@ -12,7 +12,12 @@
 <body>
 
     
-    <%- include('layouts/header.ejs') %> 
+    <% if (isLoggedIn) { %>
+        <%- include('layouts/header_logout.ejs') %>
+      <% } else { %>
+        <%- include('layouts/header_login.ejs') %>
+      <% } %>
+      
 
 
     <section class="movie-banner">
