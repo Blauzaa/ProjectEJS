@@ -226,26 +226,24 @@ app.get('/', async (req, res) => {
 
   app.get('/watch', async (req, res) => {
     try {
-      const movies = await getMovies();
-      const comingSoon = await getComingSoonMovies();
-      const freeMovies = await getFreeMovies();
-      const mainMovies = await getMainMovies();
-      const isLoggedIn = !!req.user; // Check if user is logged in
-      res.render('watch', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn }); // Pass movie data to the template
+        const movieId = req.query.movieId; // Mengambil ID film dari parameter query
+        // Gunakan ID untuk mengambil data film dari database
+        const selectedMovie = await Movie3.findById(movieId);
+        const isLoggedIn = !!req.user; // Check if user is logged in
+        res.render('watch', { selectedMovie, isLoggedIn }); // Pass movie data to the template
     } catch (error) {
-      console.error(error);
-      res.render('error'); // Handle errors appropriately
+        console.error(error);
+        res.render('error'); // Handle errors appropriately
     }
-  });
+});
 
   app.get('/comingsoon', async (req, res) => {
     try {
-      const movies = await getMovies();
-      const comingSoon = await getComingSoonMovies();
-      const freeMovies = await getFreeMovies();
-      const mainMovies = await getMainMovies();
+      const movieId = req.query.movieId; // Mengambil ID film dari parameter query
+      // Gunakan ID untuk mengambil data film dari database
+      const selectedMovie = await Movie2.findById(movieId);
       const isLoggedIn = !!req.user; // Check if user is logged in
-      res.render('comingsoon', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn }); // Pass movie data to the template
+      res.render('comingsoon', { selectedMovie, isLoggedIn }); // Pass movie data to the template
     } catch (error) {
       console.error(error);
       res.render('error'); // Handle errors appropriately
@@ -254,17 +252,19 @@ app.get('/', async (req, res) => {
 
   app.get('/buy', async (req, res) => {
     try {
-      const movies = await getMovies();
-      const comingSoon = await getComingSoonMovies();
-      const freeMovies = await getFreeMovies();
-      const mainMovies = await getMainMovies();
+      const movieId = req.query.movieId; // Mengambil ID film dari parameter query
+      // Gunakan ID untuk mengambil data film dari database
+      const selectedMovie = await Movie.findById(movieId);
       const isLoggedIn = !!req.user; // Check if user is logged in
-      res.render('buy', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn }); // Pass movie data to the template
+      res.render('buy', { selectedMovie, isLoggedIn }); // Pass movie data to the template
     } catch (error) {
       console.error(error);
       res.render('error'); // Handle errors appropriately
     }
   });
+
+
+  
 
 //ejs
 app.set('view engine', 'ejs');

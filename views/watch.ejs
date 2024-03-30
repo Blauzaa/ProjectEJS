@@ -19,7 +19,7 @@
     <% } %>
       
 
-
+    <% if (selectedMovie) { %>
     <section class="movie-banner">
         <div class="m-banner-img">
             <img src="img/ls crash landing on you.jpg">
@@ -32,13 +32,13 @@
                 <div class="title-top">
 
                     <div class="movie-title">
-                        <h1>CRASH LANDING ON YOU</h1>
+                        <h1><%= selectedMovie.name %></h1>
                     </div>
 
                     <div class="more-about-movie">
                         <span class="quality">Full HD</span>
                         <div class="rating">
-                            3.5 <i class='bx bxs-star' ></i> <i class='bx bxs-star' ></i> <i class='bx bxs-star' ></i> <i class='bx bxs-star-half' ></i> <i class='bx bx-star' ></i>
+                            <%= selectedMovie.rating %> <i class='bx bxs-star' ></i> <i class='bx bxs-star' ></i> <i class='bx bxs-star' ></i> <i class='bx bxs-star-half' ></i> <i class='bx bx-star' ></i>
                         </div>
                         <span>21 juli 2004</span>
                         <span>76m</span>
@@ -53,7 +53,7 @@
                 <div class="title-bottom">
                     <div class="category">
                         <strong>Category</strong> <br>
-                        <a href="#">Romance</a>, <a href="#">Comedy</a>, <a href="#">War</a>
+                        <a href="#"><%= selectedMovie.genre %></a>
                     </div>
                     <a href="#" class="watch-btn">Watch Trailer</a>
                     
@@ -86,7 +86,7 @@
 
 
     <section class="movie-details">
-        <strong>CRASH LANDING ON YOU</strong>
+        <strong><%= selectedMovie.name %></strong>
         <p>Crash Landing On You yang asli mengisahkan Yoon Se-ri, pengusaha sukses asal Korea Selatan yang mendarat darurat di Zona Demiliterisasi Korea saat melakukan paralayang. Kejadian itu mempertemukan Se-ri dengan kapten Ri Jeong-hyeok, tentara Korea Utara yang menjaga perbatasan.</p>
     </section>
 
@@ -131,7 +131,7 @@
         </div>
     </section>
     
-    
+    <% } %>
 
 
     <!-- footer -->

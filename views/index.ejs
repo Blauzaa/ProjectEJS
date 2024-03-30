@@ -85,7 +85,7 @@
             <% for (const movie of movies) { %>
                 <div class="box">
                   <div class="box-img">
-                    <a href="/buy"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                    <a href="/buy?movieId=<%= movie._id %>"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
                   </div>
                   <h3><%= movie.name %></h3>
                   <span><%= movie.rating %> | <%= movie.genre %></span>
@@ -206,7 +206,7 @@
                 <% for (const movie of comingSoon) { %>
                     <div class="swiper-slide box">
                       <div class="box-img">
-                        <a href="/comingsoon"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                        <a href="/comingsoon?movieId=<%= movie._id %>"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
                       </div>
                       <h3><%= movie.name %></h3>
                       <span><%= movie.rating %> | <%= movie.genre %></span>
@@ -329,7 +329,7 @@
                 <% for (const movie of freeMovies) { %>
                     <div class="swiper-slide box">
                       <div class="box-img">
-                        <a href="/watch"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                        <a href="/watch?movieId=<%= movie._id %>"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
                       </div>
                       <h3><%= movie.name %></h3>
                       <span><%= movie.rating %> Season | <%= movie.genre %></span>

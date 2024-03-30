@@ -18,7 +18,7 @@
     <% } %>
       
 
-
+    <% if (selectedMovie) { %>
     <section class="movie-banner">
         <div class="m-banner-img">
             <img src="img/ls gyeong.jpg">
@@ -31,7 +31,7 @@
                 <div class="title-top">
 
                     <div class="movie-title">
-                        <h1>Gyeongseong Creature </h1>
+                        <h1><%= selectedMovie.name %></h1>
                     </div>
 
                     <div class="more-about-movie">
@@ -68,7 +68,7 @@
         <p>Gyeongseong Creature adalah seri televisi Korea Selatan yang akan datang yang dibintangi oleh Park Seo-joon dan Han So-hee. Berlatarbelakang pada musim semi tahun 1945, ketika Gyeongseong, berada di era tergelapnya, seri ini menggambarkan kisah orang-orang yang bertarung sengit di perbatasan antara hidup dan mati.</p>
 
     </section>
-
+    <% } %>
     <!-- footer -->
 
     

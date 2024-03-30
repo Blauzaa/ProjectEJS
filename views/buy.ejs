@@ -17,7 +17,7 @@
         <%- include('layouts/header_login.ejs') %> 
     <% } %>
       
-
+    <% if (selectedMovie) { %>
     <section class="movie-banner">
         <div class="m-banner-img">
             <img src="img/ls all of us.webp">
@@ -30,7 +30,7 @@
                 <div class="title-top">
 
                     <div class="movie-title">
-                        <h1>ALL OF US ARE DEAD</h1>
+                        <h1><%= selectedMovie.name %></h1>
                     </div>
 
                     <div class="more-about-movie">
@@ -68,7 +68,7 @@
         <strong>All Of Us Are Dead</strong>
         <p>Menceritakan kisah sekelompok siswa SMA yang menunggu pertolongan saat virus zombie merebak di sekolah. Satu per satu bermutasi menjadi makhluk menyeramkan. Pertemanan mereka pun diuji saat mencoba bertahan hidup. Tanpa makanan dan air, juga sambungan internet yang diputus pemerintah.</p>
     </section>
-
+    <% } %>
     <!-- footer -->
 
     
