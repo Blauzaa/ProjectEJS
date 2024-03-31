@@ -1,46 +1,47 @@
-const LocalStrategy = require("passport-local").Strategy;
-const bcrypt = require("bcrypt");
+const LocalStrategy = require("passport-local").Strategy; // Mengimpor modul LocalStrategy dari passport-local
+const bcrypt = require("bcrypt"); // Mengimpor modul bcrypt untuk melakukan hashing password
 
-async function initialize(passport, getUserByEmail, getUserById) {
-  // Function to authenticate users
-  async function authenticateUsers(email, password, done){
-    try {
-      // Get user by email
-      const user = await getUserByEmail(email);
-      if (!user) {
-        return done(null, false, { message: "No user found with that email" });
+async function initialize(passport, getUserByEmail, getUserById) { 
+  
+  async function authenticateUsers(email, password, done){ 
+    try { 
+      const user = await getUserByEmail(email); 
+      
+      if (!user) { 
+        return done(null, false, { message: "Tidak ada pengguna ditemukan dengan email tersebut" });
       }
 
-      // Generate a salt for password hashing
-      const salt = await bcrypt.genSalt(10);
+      const salt = await bcrypt.genSalt(10); // Menghasilkan salt untuk penguncian password dengan panjang 10
 
-      // Hash the entered password using the salt
-      const hashedPassword = await bcrypt.hash(password, salt);
+      const hashedPassword = await bcrypt.hash(password, salt); // Melakukan hashing terhadap password yang dimasukkan menggunakan salt yang dihasilkan
 
-      // Compare the hashed password with the stored hashed password
-      const isMatch = await bcrypt.compare(password, user.password); // Compare entered password with hashed password
-      if (isMatch) {
+      const isMatch = await bcrypt.compare(password, user.password); 
+      
+      if (isMatch) { 
         return done(null, user);
-      } else {
-        return done(null, false, { message: "Password Incorrect" });
+      } else { 
+        return done(null, false, { message: "Password Salah" });
       }
-    } catch (err) {
-      console.error("Error during authentication:", err);
-      return done(err);
+    } catch (err) { 
+      console.error("Error saat melakukan autentikasi:", err); 
+      return done(err); 
     }  
-};
+  };
 
-  passport.use(new LocalStrategy({ usernameField: "email" }, authenticateUsers));
+  // Menggunakan strategi autentikasi lokal (LocalStrategy) dengan menggunakan email sebagai username field
+  passport.use(new LocalStrategy({ usernameField: "email" }, authenticateUsers)); 
 
-  passport.serializeUser((user, done) => done(null, user.id));
+  // Meng-serialize user menjadi ID
+  passport.serializeUser((user, done) => done(null, user.id)); 
 
-  passport.deserializeUser((id, done) => {
-    try {
+  // Meng-deserialize user berdasarkan ID
+  passport.deserializeUser((id, done) => { 
+    try { 
       const user = getUserById(id);
       done(null, user); 
-    } catch (err) {
-      console.error("Error during user deserialization:", err);
-      done(err); // Pass the error to Passport
+    } catch (err) { 
+      console.error("Error saat melakukan deserialisasi pengguna:", err); 
+      done(err); 
     }
   });
 }

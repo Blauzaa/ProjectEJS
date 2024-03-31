@@ -19,7 +19,7 @@ window.onscroll = () => {
   navbar.classList.remove('active');
 }
   
-//slider
+// Inisialisasi slider untuk halaman utama
 var swiper = new Swiper(".home", {
     loop:true,
     spaceBetween: 30,
@@ -34,7 +34,7 @@ var swiper = new Swiper(".home", {
     },
   });
   
-
+// Inisialisasi slider untuk daftar film comingsoon
   var swiper = new Swiper(".coming-container", {
     spaceBetween: 20,
     loop:true,
@@ -58,7 +58,7 @@ var swiper = new Swiper(".home", {
       },
     },
   });
-
+// Inisialisasi slider untuk daftar film freemovie
   var swiper = new Swiper(".free-container", {
     spaceBetween: 20,
     loop:true,
@@ -84,18 +84,18 @@ var swiper = new Swiper(".home", {
   });
 
 
-  //playvideo 
+    // Menangani pemutaran video saat tombol play ditekan
   document.addEventListener('DOMContentLoaded', function () {
     var videoElement = document.getElementById('m-video');
     var movieBanner = document.querySelector('.movie-banner');
-
+    // Mengaktifkan pemutaran video dan menampilkan popup pemutaran
     document.querySelector('.play-btn a').addEventListener('click', function () {
         videoElement.play();
         document.querySelector('.play').classList.add('active-popup');
         
         movieBanner.style.zIndex = 1;
     });
-
+      // Menghentikan pemutaran video dan menutup popup pemutaran
     document.querySelector('.close-movie').addEventListener('click', function () {
         videoElement.pause();
         videoElement.currentTime = 0;

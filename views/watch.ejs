@@ -22,7 +22,7 @@
     <% if (selectedMovie) { %>
     <section class="movie-banner">
         <div class="m-banner-img">
-            <img src="img/ls crash landing on you.jpg">
+            <img src="img/<%= selectedMovie.posterls %>">
         </div>
 
         <div class="banner-container">
@@ -36,16 +36,16 @@
                     </div>
 
                     <div class="more-about-movie">
-                        <span class="quality">Full HD</span>
+                        <span class="quality"><%= selectedMovie.quality %></span>
                         <div class="rating">
-                            <%= selectedMovie.rating %> <i class='bx bxs-star' ></i> <i class='bx bxs-star' ></i> <i class='bx bxs-star' ></i> <i class='bx bxs-star-half' ></i> <i class='bx bx-star' ></i>
+                            <%= selectedMovie.rating %> <i class='bx bxs-star' > </i> <!-- <i class='bx bxs-star' ></i> <i class='bx bxs-star' ></i> <i class='bx bxs-star-half' ></i> <i class='bx bx-star' ></i> -->
                         </div>
-                        <span>21 juli 2004</span>
-                        <span>76m</span>
+                        <span><%= selectedMovie.releasedate %></span>
+                        <span><%= selectedMovie.duration %></span>
                     </div>
 
                     <div class="language">
-                        <span>English</span>
+                        <span><%= selectedMovie.language %></span>
                     </div>
 
                 </div>
@@ -76,7 +76,7 @@
                 </a>
                 <div class="play-movie">
                     <video id="m-video" controls>
-                        <source src="video/ACE.mp4" type="video/mp4">
+                        <source src="video/<%= selectedMovie.video %>" type="video/mp4">
                     </video>
                 </div>
             </div>
@@ -87,49 +87,33 @@
 
     <section class="movie-details">
         <strong><%= selectedMovie.name %></strong>
-        <p>Crash Landing On You yang asli mengisahkan Yoon Se-ri, pengusaha sukses asal Korea Selatan yang mendarat darurat di Zona Demiliterisasi Korea saat melakukan paralayang. Kejadian itu mempertemukan Se-ri dengan kapten Ri Jeong-hyeok, tentara Korea Utara yang menjaga perbatasan.</p>
+        <p><%= selectedMovie.description %></p>
     </section>
 
     <section class="screenshots">
         <strong>Screenshots</strong>
         <div class="screen-s-container">
-            <img src="img/Goblin.jpeg">
-            <img src="img/itaewon class.jpg">
-            <img src="img/It's Okay to Not Be Okay.jpg">
-            <img src="img/happiness.jpg">
+            <img src="img/<%= selectedMovie.ss1 %>">
+            <img src="img/<%= selectedMovie.ss2 %>">
+            <img src="img/<%= selectedMovie.ss3 %>">
+            <img src="img/<%= selectedMovie.ss4 %>">
         </div>
     </section>
 
-
-    <section class="list-episode">
-        <strong id="seasonButton1" onclick="toggleDropdown('episodeList1')">Season 1</strong>
-        <div class="list">
-            <ul class="dropdown-content" id="episodeList1">
-                <li><a href="#">Episode 1</a></li>
-                <li><a href="#">Episode 2</a></li>
-                <li><a href="#">Episode 3</a></li>
-                <li><a href="#">Episode 4</a></li>
-                <li><a href="#">Episode 5</a></li>
-                <li><a href="#">Episode 6</a></li>
-            </ul>
-        </div>
-    </section>
+    <% for(let i = 0; i < selectedMovie.seasons.length; i++) { %>
+        <section class="list-episode">
+            <strong id="seasonButton<%= i + 1 %>" onclick="toggleDropdown('episodeList<%= i + 1 %>')">Season <%= i + 1 %></strong>
+            <div class="list">
+                <ul class="dropdown-content" id="episodeList<%= i + 1 %>">
+                    <% for(let j = 1; j <= selectedMovie.seasons[i]; j++) { %>
+                        <li><a href="#"><%= selectedMovie.name %> <%= j %></a></li>
+                    <% } %>
+                </ul>
+            </div>
+        </section>
+    <% } %>
     
-    <section class="list-episode">
-        <strong id="seasonButton2" onclick="toggleDropdown('episodeList2')">Season 2</strong>
-        <div class="list">
-            <ul class="dropdown-content" id="episodeList2">
-                <li><a href="#">Episode 1</a></li>
-                <li><a href="#">Episode 2</a></li>
-                <li><a href="#">Episode 3</a></li>
-                <li><a href="#">Episode 4</a></li>
-                <li><a href="#">Episode 5</a></li>
-                <li><a href="#">Episode 6</a></li>
-                <li><a href="#">Episode 7</a></li>
-                <li><a href="#">Episode 8</a></li>
-            </ul>
-        </div>
-    </section>
+
     
     <% } %>
 
