@@ -1,153 +1,34 @@
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config(); // Menggunakan dotenv untuk mengatur environment variables dalam mode development
-}
-
 const express = require('express');
 const app = express();
-const bcrypt = require("bcrypt"); // Menggunakan bcrypt untuk hashing password
-const passport = require("passport"); // Menggunakan Passport.js untuk otentikasi pengguna
-const initializePassport = require("./passport/passport-config"); // Menggunakan konfigurasi Passport.js yang telah dibuat
-const flash = require("express-flash"); // Menggunakan express-flash untuk mengelola pesan flash
-const session = require("express-session"); // Menggunakan express-session untuk manajemen session
-const mongoose = require('mongoose'); // Menggunakan Mongoose untuk berinteraksi dengan MongoDB
-const fs = require('fs'); // Menggunakan fs untuk membaca file
-const moviesDir = './MovieData'; // Direktori yang berisi file JSON data film
-const movieFile1 = `${moviesDir}/ontrending.json`; // Path menuju file JSON data film
-const movieFile2 = `${moviesDir}/comingsoon.json`; // Path menuju file JSON data film
-const movieFile3 = `${moviesDir}/freemovie.json`; // Path menuju file JSON data film
-const movieFile4 = `${moviesDir}/mainmovie.json`; // Path menuju file JSON data film
-const port = 3000;
+const flash = require("express-flash");
+const session = require("express-session");
+const passport = require("passport");
+const initializePassport = require("./passport/passport-config");
+const mongoose = require('mongoose');
+const fs = require('fs');
+const User = require("./models/user");
+const { Movie, Movie2, Movie3, Movie4 } = require("./models/movie"); // Import all necessary models
+const authController = require("./controllers/authController");
+const { getMovies, getComingSoonMovies, getFreeMovies, getMainMovies } = require("./controllers/movieController");
+const bcrypt = require("bcrypt");
+
+// Load environment variables in development mode
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
   
-const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/Database'; // Mendapatkan URI MongoDB dari environment variable atau default jika tidak ada
-const userSchema = new mongoose.Schema({ // Mendefinisikan skema pengguna
-  name: String,
-  email: String,
-  password: String
-});
-const User = mongoose.model('User', userSchema); // Membuat model pengguna dari skema
+// Define the port for the server
+const port = process.env.PORT || 3000;
 
-const movieSchema = new mongoose.Schema({ // Mendefinisikan skema film
-  name: String,
-  rating: Number,
-  genre: String,
-  harga: Number, 
-  poster: String, 
-  video: String,  
-  quality: String,
-  releasedate: String,
-  duration: String,
-  language: String,
-  description: String,
-  posterls: String,
-  ss1: String,
-  ss2: String,
-  ss3: String,
-  ss4: String,
-  seasons: [Number],
-});
-  const Movie = mongoose.model('Movie', movieSchema); 
-  const Movie2 = mongoose.model('Movie2', movieSchema);
-  const Movie3 = mongoose.model('Movie3', movieSchema);
-  const Movie4 = mongoose.model('Movie4', movieSchema);
+// Define the MongoDB URI
+const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/Database';
 
-
-  async function getMovies() {// Mendapatkan semua film dari koleksi Movie
-    try {
-      const movies = await Movie.find(); // Get all movies from Movie collection
-      return movies;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  }
-  
-  async function getComingSoonMovies() { // Mendapatkan semua film yang akan datang dari koleksi Movie2
-    try {
-      const comingSoonMovies = await Movie2.find(); // Get all movies from Movie2 collection
-      return comingSoonMovies;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  }
-  
-  async function getFreeMovies() { // Mendapatkan semua film gratis dari koleksi Movie3
-    try {
-      const freeMovies = await Movie3.find({ harga: 0 }); // Filter Movie3 for "free" movies (harga = 0)
-      return freeMovies;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  }
-
-  async function getMainMovies() { // Mendapatkan semua film utama dari koleksi Movie4
-    try {
-      const mainMovies = await Movie4.find(); // Get all movies from Movie4 collection
-      return mainMovies;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  }
-  
-  async function createMovies(movies, collectionName) {  // Membuat film baru dalam koleksi yang ditentukan
-    const MovieModel = collectionName === '1' ? Movie : collectionName === '2' ? Movie2 : collectionName === '3' ? Movie3 : Movie4;
-    try {
-      for (const movie of movies) {
-        const existingMovie = await MovieModel.findOne({ name: movie.name });
-        if (!existingMovie) {
-          const newMovie = new MovieModel(movie);
-          await newMovie.save();
-          console.log(`Movie "${movie.name}" added to collection "${collectionName}" successfully.`);
-        } else {
-          console.log(`Movie "${movie.name}" already exists in collection "${collectionName}". Skipping...`);
-        }
-      }
-    } catch (error) {
-      console.error("Error creating movies:", error);
-    }
-  }
-  
-// Membaca data film dari file JSON dan menambahkannya ke koleksi yang sesuai dalam database
-  fs.promises.readFile(movieFile1, 'utf-8')
-    .then(data => {
-      const movies = JSON.parse(data);
-      createMovies(movies, '1'); // Add movies to collection 1
-    })
-    .catch(error => console.error('Error reading ontrending.json:', error));
-  
-  fs.promises.readFile(movieFile2, 'utf-8')
-    .then(data => {
-      const movies = JSON.parse(data);
-      createMovies(movies, '2'); // Add movies to collection 2
-    })
-    .catch(error => console.error('Error reading movie-data2.json:', error));
-  
-  fs.promises.readFile(movieFile3, 'utf-8')
-    .then(data => {
-      const movies = JSON.parse(data);
-      createMovies(movies, '3'); // Add movies to collection 3
-    })
-    .catch(error => console.error('Error reading movie-data3.json:', error));
-      
-  fs.promises.readFile(movieFile4, 'utf-8')
-  .then(data => {
-    const movies = JSON.parse(data);
-    createMovies(movies, '4'); // Add movies to collection 4
-  })
-  .catch(error => console.error('Error reading movie-data4.json:', error));
-
-  
-  mongoose.connect(mongoURI, { }) // Menghubungkan ke MongoDB menggunakan URI yang ditentukan
-  .then(() => { // Mengonfirmasi koneksi berhasil
-    console.log('MongoDB connected successfully.');
-  })
-  .catch(err => console.error('MongoDB connection error:', err)); // Menangani kesalahan koneksi MongoDB
-
-
-
+// Export the Express app and MongoDB URI for testing purposes
+module.exports = {
+  app,
+  mongoURI
+};
 
   
 // Konfigurasi middleware Express dan Passport.js
@@ -167,43 +48,8 @@ initializePassport( // Menginisialisasi Passport.js
   async (id) => await User.findById(id) // Fungsi untuk mendapatkan pengguna berdasarkan ID
 );
 
-  
-  app.post("/signin", async (req, res) => {
-    try {
-        // Check email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(req.body.email)) {
-            req.flash("error", "Invalid email format");
-            return res.redirect("/signin");
-        }
-        // Cek apakah pengguna dengan email atau nama yang sama sudah ada
-        const existingUser = await User.findOne({ $or: [{ email: req.body.email }, { name: req.body.name }] });
-        if (existingUser) {
-            if (existingUser.email === req.body.email) {
-                req.flash("error", "Email already exists");  //menyimpan pesan error dalam objek messages oleh middleware flash
-            } else if (existingUser.name === req.body.name) {
-                req.flash("error", "Name already exists");
-            }
-            return res.redirect("/signin");
-        } else {
-            const hashedPassword = await bcrypt.hash(req.body.password, 10); // Hash password menggunakan bcrypt
-    
-            const newUser = new User({
-                name: req.body.name,
-                email: req.body.email,
-                password: hashedPassword, // Menyimpan password yang telah di-hash
-            });
-    
-            await newUser.save(); // Menyimpan pengguna baru ke dalam database
-            console.log(newUser); // Menampilkan informasi pengguna baru di console
-            res.redirect("/login"); // Redirect ke halaman login setelah berhasil mendaftar
-        }
-    } catch (e) {
-        console.log(e);
-        res.redirect("/signin");
-    }
-});
-
+  // Route to handle user sign-up
+app.post("/signin", authController.signUp);
 
 
 // Rute untuk menangani proses login pengguna
@@ -277,7 +123,11 @@ app.get('/', async (req, res) => {
   });
 
 
-  
+  mongoose.connect(mongoURI, { }) // Menghubungkan ke MongoDB menggunakan URI yang ditentukan
+  .then(() => { // Mengonfirmasi koneksi berhasil
+    console.log('MongoDB connected successfully.');
+  })
+  .catch(err => console.error('MongoDB connection error:', err));
 
 //ejs
 app.set('view engine', 'ejs');
