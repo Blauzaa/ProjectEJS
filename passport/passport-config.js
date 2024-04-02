@@ -7,8 +7,9 @@ async function initialize(passport, getUserByEmail, getUserById) {
     try { 
       const user = await getUserByEmail(email); 
       
+      //Pesan error disampaikan dari objek message yang dikirimkan melalui callback done
       if (!user) { 
-        return done(null, false, { message: "Tidak ada pengguna ditemukan dengan email tersebut" });
+        return done(null, false, { message: "Email not found." });  //return done digunakan untuk memberi tahu Passport-config.js tentang hasil autentikasi. Fungsi done adalah sebuah callback yang harus dipanggil setelah selesai memproses autentikasi.
       }
 
       const salt = await bcrypt.genSalt(10); // Menghasilkan salt untuk penguncian password dengan panjang 10
@@ -20,7 +21,7 @@ async function initialize(passport, getUserByEmail, getUserById) {
       if (isMatch) { 
         return done(null, user);
       } else { 
-        return done(null, false, { message: "Password Salah" });
+        return done(null, false, { message: "Wrong Password" });
       }
     } catch (err) { 
       console.error("Error saat melakukan autentikasi:", err); 
