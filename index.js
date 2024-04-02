@@ -180,7 +180,7 @@ initializePassport( // Menginisialisasi Passport.js
         const existingUser = await User.findOne({ $or: [{ email: req.body.email }, { name: req.body.name }] });
         if (existingUser) {
             if (existingUser.email === req.body.email) {
-                req.flash("error", "Email already exists");
+                req.flash("error", "Email already exists");  //menyimpan pesan error dalam objek messages oleh middleware flash
             } else if (existingUser.name === req.body.name) {
                 req.flash("error", "Name already exists");
             }
