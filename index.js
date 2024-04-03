@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 const User = require("./models/user");
 const { Movie, Movie2, Movie3, Movie4 } = require("./models/movie"); // Import all necessary models
-const authController = require("./controllers/authController");
+const authController = require("./controllers/authController"); 
 const { getMovies, getComingSoonMovies, getFreeMovies, getMainMovies } = require("./controllers/movieController");
 const bcrypt = require("bcrypt");
 
