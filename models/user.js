@@ -5,7 +5,9 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
   name: String,     
   email: String,    
-  password: String  
+  password: String,
+  uang: { type: Number, default: 0 }, // Set default value untuk uang
+  alrbuy: { type: [String], default: [] }
 });
 
 // Buat model User berdasarkan schema yang telah didefinisikan

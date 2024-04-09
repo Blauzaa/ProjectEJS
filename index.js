@@ -13,6 +13,7 @@ const { getMovies, getComingSoonMovies, getFreeMovies, getMainMovies } = require
 const movieController = require('./controllers/movieController');
 const bodyParser = require('body-parser');
 const multer = require('multer');
+const websiteController = require('./controllers/websiteController');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -143,7 +144,10 @@ app.get('/', async (req, res) => {
       const movies2 = await Movie2.find();
       const movies3 = await Movie3.find();
       const movies4 = await Movie4.find();
-      res.render('admin', { movies1, movies2, movies3, movies4 }); // Pass movie data to the template
+      const totalMovies = await websiteController.getTotalMovies();
+      const totalUsers = await websiteController.getTotalUsers();
+      const totalUang = await websiteController.getAdminUang();
+      res.render('admin', { movies1, movies2, movies3, movies4, totalMovies, totalUsers, totalUang }); // Pass movie data to the template
     } catch (error) {
       console.error(error);
       res.render('error'); // Handle errors appropriately
