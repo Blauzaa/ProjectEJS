@@ -12,21 +12,32 @@ async function initialize(passport, getUserByEmail, getUserById) {
         return done(null, false, { message: "Email not found." });  //return done digunakan untuk memberi tahu Passport-config.js tentang hasil autentikasi. Fungsi done adalah sebuah callback yang harus dipanggil setelah selesai memproses autentikasi.
       }
 
+      if (email === '111@admin.com' && password === '11111') {
+        // Jika sesuai, tandai pengguna sebagai admin
+        user.admin = true;
+      }
+
       const salt = await bcrypt.genSalt(10); // Menghasilkan salt untuk penguncian password dengan panjang 10
 
       const hashedPassword = await bcrypt.hash(password, salt); // Melakukan hashing terhadap password yang dimasukkan menggunakan salt yang dihasilkan
 
       const isMatch = await bcrypt.compare(password, user.password); 
       
-      if (isMatch) { 
-        return done(null, user);
-      } else { 
+      if (isMatch) {
+        // Redirect ke halaman admin jika pengguna adalah admin
+        if (user.admin) {
+          return done(null, user, { admin: true });
+        } else {
+          // Redirect ke halaman utama jika pengguna bukan admin
+          return done(null, user);
+        }
+      } else {
         return done(null, false, { message: "Wrong Password" });
       }
-    } catch (err) { 
-      console.error("Error saat melakukan autentikasi:", err); 
-      return done(err); 
-    }  
+    } catch (err) {
+      console.error("Error saat melakukan autentikasi:", err);
+      return done(err);
+    }
   };
 
   // Menggunakan strategi autentikasi lokal (LocalStrategy) dengan menggunakan email sebagai username field

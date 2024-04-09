@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UI/UX</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="css/admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <link rel="icon" href="img/movie-solid-24.png" type="image/x-icon" />
+  </head>
+  <body>
+    <div class="container">
+      <aside>
+        <div class="sidebar" class="active">
+          <a href="/logout">
+            <!-- logout  -->
+            <span><i class="bx bx-log-out"></i> </span>
+            <h3>Logout</h3>
+          </a>
+        </div>
+      </aside>
+
+      <main>
+        <h1>Dashbord</h1>
+        <div class="insights">
+          <!-- Start selling -->
+          <div class="sales">
+            <span><i class="bx bx-user"></i></span>
+            <div class="middle">
+              <div class="left">
+                <h3>Total user</h3>
+                <h1>1,234</h1>
+              </div>
+            </div>
+            <small>Last 24 Hours</small>
+          </div>
+          <!-- End selling -->
+
+          <!-- Start expenses -->
+          <div class="expenses">
+            <span><i class="bx bx-money"></i></span>
+            <div class="middle">
+              <div class="left">
+                <h3>Total Pendapatan</h3>
+                <h1>$25,024</h1>
+              </div>
+            </div>
+            <small>Last 24 Hours</small>
+          </div>
+          <!-- End expenses -->
+
+          <!-- Start income -->
+          <div class="income">
+            <span><i class="bx bx-film"></i></span>
+            <div class="middle">
+              <div class="left">
+                <h3>Total Film</h3>
+                <h1>33</h1>
+              </div>
+            </div>
+            <small>Last 24 Hours</small>
+          </div>
+          <!-- End income -->
+        </div>
+        <!-- End insights -->
+
+        <div class="insert_data">
+          <% if (messages.error) { %>
+          <div class="alert-danger">
+            <strong class="error"><%= messages.error %> </strong>
+          </div>
+          <% } %>
+          <h2>Insert Data</h2>
+          <div class="insert_data_container">
+            <form action="/insertmovie" method="POST">
+              <input type="text" name="name" placeholder="Nama Film" />
+              <input type="text" name="rating" placeholder="Rating" />
+              <input type="text" name="genre" placeholder="Genre" />
+              <input type="text" name="harga" placeholder="Harga" />
+              <input type="text" name="poster" placeholder="Poster" />
+              <input type="text" name="video" placeholder="Video" />
+              <input type="text" name="quality" placeholder="Kualitas" />
+              <input type="text" name="releasedate" placeholder="Tanggal Rilis"/>
+              <input type="text" name="duration" placeholder="Durasi" />
+              <input type="text" name="language" placeholder="Bahasa" />
+              <textarea
+                name="description"
+                rows="10"
+                placeholder="Deskripsi"
+              ></textarea>
+              <input type="text" name="posterls" placeholder="Poster LS" />
+              <input type="text" name="ss1" placeholder="Screenshot 1" />
+              <input type="text" name="ss2" placeholder="Screenshot 2" />
+              <input type="text" name="ss3" placeholder="Screenshot 3" />
+              <input type="text" name="ss4" placeholder="Screenshot 4" />
+              <input type="text" name="seasons" placeholder="Seasons" />
+              <!-- Tambahkan input fields untuk properti lainnya sesuai dengan schema Movie -->
+              <select name="category">
+                <option value="1">On Trending</option>
+                <option value="2">Coming Soon</option>
+                <option value="3">Free Movie</option>
+                <option value="4">Main Movie</option>
+              </select>
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+
+          <div class="insert_data">
+            <% if (messages.errors) { %>
+            <div class="alert-danger">
+              <strong class="error"><%= messages.errors %> </strong>
+            </div>
+            <% } %>
+            <h2>Insert Data</h2>
+            <div class="insert_data_container">
+              <form
+                action="/upload"
+                method="POST"
+                enctype="multipart/form-data"
+              >
+                <input type="file" name="jsonFile" accept=".json" />
+                <select name="category">
+                  <option value="1">On Trending</option>
+                  <option value="2">Coming Soon</option>
+                  <option value="3">Free Movie</option>
+                  <option value="4">Main Movie</option>
+                </select>
+                <button type="submit">Upload</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="recent_order">
+          <h2>On Trending</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Nama Film</th>
+                <th>Rating</th>
+                <th>Genre</th>
+                <th>Harga</th>
+                <th>Poster</th>
+                <th>Video</th>
+                <th>Kualitas</th>
+                <th>Tanggal Rilis</th>
+                <th>Durasi</th>
+                <th>Bahasa</th>
+                <th>Deskripsi</th>
+                <th>Poster LS</th>
+                <th>SS 1</th>
+                <th>SS 2</th>
+                <th>SS 3</th>
+                <th>SS 4</th>
+                <th>Season</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% movies1.forEach((movie, index) => { %>
+              <tr>
+                <td><%= movie.name %></td>
+                <td><%= movie.rating %></td>
+                <td><%= movie.genre %></td>
+                <td><%= movie.harga %></td>
+                <td><%= movie.poster %></td>
+                <td><%= movie.video %></td>
+                <td><%= movie.quality %></td>
+                <td><%= movie.releasedate %></td>
+                <td><%= movie.duration %></td>
+                <td><%= movie.language %></td>
+                <td>
+                  <%= movie.description.length > 30 ?
+                  movie.description.substring(0, 30) + '...' : movie.description
+                  %>
+                </td>
+                <td><%= movie.posterls %></td>
+                <td><%= movie.ss1 %></td>
+                <td><%= movie.ss2 %></td>
+                <td><%= movie.ss3 %></td>
+                <td><%= movie.ss4 %></td>
+                <td><%= movie.seasons %></td>
+                <td>
+                  <div class="dropdown">
+                    <a
+                      class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle"
+                      href="#"
+                      role="button"
+                      data-toggle="dropdown"
+                    >
+                      <i class="dw dw-more"><i class="bx bx-menu"></i></i>
+                    </a>
+                    <div
+                      class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
+                    >
+                      <a class="dropdown-item" href="#"
+                        ><i class="dw dw-eye"></i> View</a
+                      >
+                      <a class="open-modal" data-modal-id="<%= movie._id %>" class="dropdown-item" href="#"
+                        ><i class="dw dw-edit2"></i> Edit</a
+                      >
+
+                      <!-- The Modal -->
+                      <div id="myModal<%= movie._id %>" class="modal">
+                        <!-- Modal content -->
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <span class="close">&times;</span>
+                            <h2>Insert Data</h2>
+                          </div>
+                          <div class="modal-body">
+                            <!-- Form untuk menyisipkan data -->
+                            <form action="/updatemovie" method="POST">
+                              <input type="hidden" name="id" value="<%= movie._id %>">
+                              <input type="text" class="center-placeholder" id="name" name="name" placeholder="Nama Film" />
+                              <input type="text" class="center-placeholder" id="rating" name="rating" placeholder="Rating" />
+                              <input type="text" class="center-placeholder" id="genre" name="genre" placeholder="Genre" />
+                              <input type="text" class="center-placeholder" id="harga" name="harga" placeholder="Harga" />
+                              <input type="text" class="center-placeholder" id="poster" name="poster" placeholder="Poster" />
+                              <input type="text" class="center-placeholder" id="video" name="video" placeholder="Video" />
+                              <input type="text" class="center-placeholder" id="quality" name="quality" placeholder="Kualitas" />
+                              <input type="text" class="center-placeholder" id="releasedate" name="releasedate" placeholder="Tanggal Rilis"/>
+                              <input type="text" class="center-placeholder" id="duration" name="duration" placeholder="Durasi" />
+                              <input type="text" class="center-placeholder" id="language" name="language" placeholder="Bahasa" />
+                              <textarea
+                                type="text"
+                                id="description"
+                                name="description"
+                                rows="10"
+                                class="center-placeholder"
+                                placeholder="Deskripsi"
+                              ></textarea>
+                              <input type="text" class="center-placeholder" id="posterls" name="posterls" placeholder="Poster LS" />
+                              <input type="text" class="center-placeholder" id="ss1" name="ss1" placeholder="Screenshot 1" />
+                              <input type="text" class="center-placeholder" id="ss2" name="ss2" placeholder="Screenshot 2" />
+                              <input type="text" class="center-placeholder" id="ss3" name="ss3" placeholder="Screenshot 3" />
+                              <input type="text" class="center-placeholder" id="ss4" name="ss4" placeholder="Screenshot 4" />
+                              <input type="text" class="center-placeholder" id="seasons" name="seasons" placeholder="Seasons" />
+                              <button type="submit" >Submit</button>
+                            </form>
+                          </div>
+                          <div class="modal-footer">
+                            <h3>Modal Footer</h3>
+                          </div>
+                        </div>
+                      </div>
+                      <a class="dropdown-item" href="#" onclick="deleteMovie('<%= movie._id %>'); return false;">
+                        <i class="dw dw-delete-3"></i> Delete
+                      </a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="recent_order">
+          <h2>Coming Soon</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Nama Film</th>
+                <th>Rating</th>
+                <th>Genre</th>
+                <th>Harga</th>
+                <th>Poster</th>
+                <th>Video</th>
+                <th>Kualitas</th>
+                <th>Tanggal Rilis</th>
+                <th>Durasi</th>
+                <th>Bahasa</th>
+                <th>Deskripsi</th>
+                <th>Poster LS</th>
+                <th>SS 1</th>
+                <th>SS 2</th>
+                <th>SS 3</th>
+                <th>SS 4</th>
+                <th>Season</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% movies2.forEach((movie, index) => { %>
+              <tr>
+                <td><%= movie.name %></td>
+                <td><%= movie.rating %></td>
+                <td><%= movie.genre %></td>
+                <td><%= movie.harga %></td>
+                <td><%= movie.poster %></td>
+                <td><%= movie.video %></td>
+                <td><%= movie.quality %></td>
+                <td><%= movie.releasedate %></td>
+                <td><%= movie.duration %></td>
+                <td><%= movie.language %></td>
+                <td>
+                  <%= movie.description.length > 30 ?
+                  movie.description.substring(0, 30) + '...' : movie.description
+                  %>
+                </td>
+                <td><%= movie.posterls %></td>
+                <td><%= movie.ss1 %></td>
+                <td><%= movie.ss2 %></td>
+                <td><%= movie.ss3 %></td>
+                <td><%= movie.ss4 %></td>
+                <td><%= movie.seasons %></td>
+                <td>
+                  <div class="dropdown">
+                    <a
+                      class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle"
+                      href="#"
+                      role="button"
+                      data-toggle="dropdown"
+                    >
+                      <i class="dw dw-more"><i class="bx bx-menu"></i></i>
+                    </a>
+                    <div
+                      class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
+                    >
+                    <a class="dropdown-item" href="#"
+                    ><i class="dw dw-eye"></i> View</a
+                  >
+                  <a class="open-modal" data-modal-id="<%= movie._id %>" class="dropdown-item" href="#"
+                    ><i class="dw dw-edit2"></i> Edit</a
+                  >
+
+                  <!-- The Modal -->
+                  <div id="myModal<%= movie._id %>" class="modal">
+                    <!-- Modal content -->
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <span class="close">&times;</span>
+                        <h2>Insert Data</h2>
+                      </div>
+                      <div class="modal-body">
+                        <!-- Form untuk menyisipkan data -->
+                        <form action="/updatemovie" method="POST">
+                          <input type="hidden" name="id" value="<%= movie._id %>">
+                          <input type="text" class="center-placeholder" id="name" name="name" placeholder="Nama Film" />
+                          <input type="text" class="center-placeholder" id="rating" name="rating" placeholder="Rating" />
+                          <input type="text" class="center-placeholder" id="genre" name="genre" placeholder="Genre" />
+                          <input type="text" class="center-placeholder" id="harga" name="harga" placeholder="Harga" />
+                          <input type="text" class="center-placeholder" id="poster" name="poster" placeholder="Poster" />
+                          <input type="text" class="center-placeholder" id="video" name="video" placeholder="Video" />
+                          <input type="text" class="center-placeholder" id="quality" name="quality" placeholder="Kualitas" />
+                          <input type="text" class="center-placeholder" id="releasedate" name="releasedate" placeholder="Tanggal Rilis"/>
+                          <input type="text" class="center-placeholder" id="duration" name="duration" placeholder="Durasi" />
+                          <input type="text" class="center-placeholder" id="language" name="language" placeholder="Bahasa" />
+                          <textarea
+                            type="text"
+                            id="description"
+                            name="description"
+                            rows="10"
+                            class="center-placeholder"
+                            placeholder="Deskripsi"
+                          ></textarea>
+                          <input type="text" class="center-placeholder" id="posterls" name="posterls" placeholder="Poster LS" />
+                          <input type="text" class="center-placeholder" id="ss1" name="ss1" placeholder="Screenshot 1" />
+                          <input type="text" class="center-placeholder" id="ss2" name="ss2" placeholder="Screenshot 2" />
+                          <input type="text" class="center-placeholder" id="ss3" name="ss3" placeholder="Screenshot 3" />
+                          <input type="text" class="center-placeholder" id="ss4" name="ss4" placeholder="Screenshot 4" />
+                          <input type="text" class="center-placeholder" id="seasons" name="seasons" placeholder="Seasons" />
+                          <button type="submit">Submit</button>
+                        </form>
+                      </div>
+                      <div class="modal-footer">
+                        <h3>Modal Footer</h3>
+                      </div>
+                    </div>
+                  </div>
+                  <a class="dropdown-item" href="#" onclick="deleteMovie('<%= movie._id %>'); return false;">
+                    <i class="dw dw-delete-3"></i> Delete
+                  </a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="recent_order">
+          <h2>Free Movie</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Nama Film</th>
+                <th>Rating</th>
+                <th>Genre</th>
+                <th>Harga</th>
+                <th>Poster</th>
+                <th>Video</th>
+                <th>Kualitas</th>
+                <th>Tanggal Rilis</th>
+                <th>Durasi</th>
+                <th>Bahasa</th>
+                <th>Deskripsi</th>
+                <th>Poster LS</th>
+                <th>SS 1</th>
+                <th>SS 2</th>
+                <th>SS 3</th>
+                <th>SS 4</th>
+                <th>Season</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% movies3.forEach((movie, index) => { %>
+              <tr>
+                <td><%= movie.name %></td>
+                <td><%= movie.rating %></td>
+                <td><%= movie.genre %></td>
+                <td><%= movie.harga %></td>
+                <td><%= movie.poster %></td>
+                <td><%= movie.video %></td>
+                <td><%= movie.quality %></td>
+                <td><%= movie.releasedate %></td>
+                <td><%= movie.duration %></td>
+                <td><%= movie.language %></td>
+                <td>
+                  <%= movie.description.length > 30 ?
+                  movie.description.substring(0, 30) + '...' : movie.description
+                  %>
+                </td>
+                <td><%= movie.posterls %></td>
+                <td><%= movie.ss1 %></td>
+                <td><%= movie.ss2 %></td>
+                <td><%= movie.ss3 %></td>
+                <td><%= movie.ss4 %></td>
+                <td><%= movie.seasons %></td>
+                <td>
+                  <div class="dropdown">
+                    <a
+                      class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle"
+                      href="#"
+                      role="button"
+                      data-toggle="dropdown"
+                    >
+                      <i class="dw dw-more"><i class="bx bx-menu"></i></i>
+                    </a>
+                    <div
+                      class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
+                    >
+                    <a class="dropdown-item" href="#"
+                    ><i class="dw dw-eye"></i> View</a
+                  >
+                  <a class="open-modal" data-modal-id="<%= movie._id %>" class="dropdown-item" href="#"
+                    ><i class="dw dw-edit2"></i> Edit</a
+                  >
+
+                  <!-- The Modal -->
+                  <div id="myModal<%= movie._id %>" class="modal">
+                    <!-- Modal content -->
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <span class="close">&times;</span>
+                        <h2>Insert Data</h2>
+                      </div>
+                      <div class="modal-body">
+                        <!-- Form untuk menyisipkan data -->
+                        <form action="/updatemovie" method="POST">
+                          <input type="hidden" name="id" value="<%= movie._id %>">
+                          <input type="text" class="center-placeholder" id="name" name="name" placeholder="Nama Film" />
+                          <input type="text" class="center-placeholder" id="rating" name="rating" placeholder="Rating" />
+                          <input type="text" class="center-placeholder" id="genre" name="genre" placeholder="Genre" />
+                          <input type="text" class="center-placeholder" id="harga" name="harga" placeholder="Harga" />
+                          <input type="text" class="center-placeholder" id="poster" name="poster" placeholder="Poster" />
+                          <input type="text" class="center-placeholder" id="video" name="video" placeholder="Video" />
+                          <input type="text" class="center-placeholder" id="quality" name="quality" placeholder="Kualitas" />
+                          <input type="text" class="center-placeholder" id="releasedate" name="releasedate" placeholder="Tanggal Rilis"/>
+                          <input type="text" class="center-placeholder" id="duration" name="duration" placeholder="Durasi" />
+                          <input type="text" class="center-placeholder" id="language" name="language" placeholder="Bahasa" />
+                          <textarea
+                            type="text"
+                            id="description"
+                            name="description"
+                            rows="10"
+                            class="center-placeholder"
+                            placeholder="Deskripsi"
+                          ></textarea>
+                          <input type="text" class="center-placeholder" id="posterls" name="posterls" placeholder="Poster LS" />
+                          <input type="text" class="center-placeholder" id="ss1" name="ss1" placeholder="Screenshot 1" />
+                          <input type="text" class="center-placeholder" id="ss2" name="ss2" placeholder="Screenshot 2" />
+                          <input type="text" class="center-placeholder" id="ss3" name="ss3" placeholder="Screenshot 3" />
+                          <input type="text" class="center-placeholder" id="ss4" name="ss4" placeholder="Screenshot 4" />
+                          <input type="text" class="center-placeholder" id="seasons" name="seasons" placeholder="Seasons" />
+                          <button type="submit">Submit</button>
+                        </form>
+                      </div>
+                      <div class="modal-footer">
+                        <h3>Modal Footer</h3>
+                      </div>
+                    </div>
+                  </div>
+                  <a class="dropdown-item" href="#" onclick="deleteMovie('<%= movie._id %>'); return false;">
+                    <i class="dw dw-delete-3"></i> Delete
+                  </a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="recent_order">
+          <h2>Main Movie</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Nama Film</th>
+                <th>Rating</th>
+                <th>Genre</th>
+                <th>Harga</th>
+                <th>Poster</th>
+                <th>Video</th>
+                <th>Kualitas</th>
+                <th>Tanggal Rilis</th>
+                <th>Durasi</th>
+                <th>Bahasa</th>
+                <th>Deskripsi</th>
+                <th>Poster LS</th>
+                <th>SS 1</th>
+                <th>SS 2</th>
+                <th>SS 3</th>
+                <th>SS 4</th>
+                <th>Season</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% movies4.forEach((movie, index) => { %>
+              <tr>
+                <td><%= movie.name %></td>
+                <td><%= movie.rating %></td>
+                <td><%= movie.genre %></td>
+                <td><%= movie.harga %></td>
+                <td><%= movie.poster %></td>
+                <td><%= movie.video %></td>
+                <td><%= movie.quality %></td>
+                <td><%= movie.releasedate %></td>
+                <td><%= movie.duration %></td>
+                <td><%= movie.language %></td>
+                <td>
+                  <%= movie.description.length > 30 ?
+                  movie.description.substring(0, 30) + '...' : movie.description
+                  %>
+                </td>
+                <td><%= movie.posterls %></td>
+                <td><%= movie.ss1 %></td>
+                <td><%= movie.ss2 %></td>
+                <td><%= movie.ss3 %></td>
+                <td><%= movie.ss4 %></td>
+                <td><%= movie.seasons %></td>
+                <td>
+                  <div class="dropdown">
+                    <a
+                      class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle"
+                      href="#"
+                      role="button"
+                      data-toggle="dropdown"
+                    >
+                      <i class="dw dw-more"><i class="bx bx-menu"></i></i>
+                    </a>
+                    <div
+                      class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
+                    >
+                    <a class="dropdown-item" href="#"
+                    ><i class="dw dw-eye"></i> View</a
+                  >
+                  <a class="open-modal" data-modal-id="<%= movie._id %>" class="dropdown-item" href="#"
+                    ><i class="dw dw-edit2"></i> Edit</a
+                  >
+
+                  <!-- The Modal -->
+                  <div id="myModal<%= movie._id %>" class="modal">
+                    <!-- Modal content -->
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <span class="close">&times;</span>
+                        <h2>Insert Data</h2>
+                      </div>
+                      <div class="modal-body">
+                        <!-- Form untuk menyisipkan data -->
+                        <form action="/updatemovie" method="POST">
+                          <input type="hidden" name="id" value="<%= movie._id %>">
+                          <input type="text" class="center-placeholder" id="name" name="name" placeholder="Nama Film" />
+                          <input type="text" class="center-placeholder" id="rating" name="rating" placeholder="Rating" />
+                          <input type="text" class="center-placeholder" id="genre" name="genre" placeholder="Genre" />
+                          <input type="text" class="center-placeholder" id="harga" name="harga" placeholder="Harga" />
+                          <input type="text" class="center-placeholder" id="poster" name="poster" placeholder="Poster" />
+                          <input type="text" class="center-placeholder" id="video" name="video" placeholder="Video" />
+                          <input type="text" class="center-placeholder" id="quality" name="quality" placeholder="Kualitas" />
+                          <input type="text" class="center-placeholder" id="releasedate" name="releasedate" placeholder="Tanggal Rilis"/>
+                          <input type="text" class="center-placeholder" id="duration" name="duration" placeholder="Durasi" />
+                          <input type="text" class="center-placeholder" id="language" name="language" placeholder="Bahasa" />
+                          <textarea
+                            type="text"
+                            id="description"
+                            name="description"
+                            rows="10"
+                            class="center-placeholder"
+                            placeholder="Deskripsi"
+                          ></textarea>
+                          <input type="text" class="center-placeholder" id="posterls" name="posterls" placeholder="Poster LS" />
+                          <input type="text" class="center-placeholder" id="ss1" name="ss1" placeholder="Screenshot 1" />
+                          <input type="text" class="center-placeholder" id="ss2" name="ss2" placeholder="Screenshot 2" />
+                          <input type="text" class="center-placeholder" id="ss3" name="ss3" placeholder="Screenshot 3" />
+                          <input type="text" class="center-placeholder" id="ss4" name="ss4" placeholder="Screenshot 4" />
+                          <input type="text" class="center-placeholder" id="seasons" name="seasons" placeholder="Seasons" />
+                          <button type="submit">Submit</button>
+                        </form>
+                      </div>
+                      <div class="modal-footer">
+                        <h3>Modal Footer</h3>
+                      </div>
+                    </div>
+                  </div>
+                  <a class="dropdown-item" href="#" onclick="deleteMovie('<%= movie._id %>'); return false;">
+                    <i class="dw dw-delete-3"></i> Delete
+                  </a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+    <script src="js/admin.js"></script>
+  </body>
+</html>

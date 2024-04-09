@@ -10,12 +10,17 @@ const User = require("./models/user");
 const { Movie, Movie2, Movie3, Movie4 } = require("./models/movie"); // Import all necessary models
 const authController = require("./controllers/authController"); 
 const { getMovies, getComingSoonMovies, getFreeMovies, getMainMovies } = require("./controllers/movieController");
-const bcrypt = require("bcrypt");
+const movieController = require('./controllers/movieController');
+const bodyParser = require('body-parser');
+const multer = require('multer');
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Load environment variables in development mode
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
+
 
   
 // Define the port for the server
@@ -54,10 +59,20 @@ app.post("/signin", authController.signUp);
 
 // Rute untuk menangani proses login pengguna
 app.post("/login", passport.authenticate("local", {
-  successRedirect: "/", // Redirect ke halaman utama jika berhasil
   failureRedirect: "/login", // Redirect ke halaman login jika gagal
   failureFlash: true // Menggunakan pesan flash untuk informasi kegagalan
-}));
+}), (req, res) => {
+  // Setelah berhasil login, arahkan ke halaman yang sesuai berdasarkan peran pengguna (admin atau bukan)
+  if (req.user.admin) {
+    res.redirect("/admin");
+  } else {
+    res.redirect("/");
+  }
+});
+
+
+
+
 // Rute untuk logout pengguna
 app.get('/logout', (req, res) => {
   req.logout(() => {
@@ -122,6 +137,56 @@ app.get('/', async (req, res) => {
     }
   });
 
+  app.get('/admin', async (req, res) => {
+    try {
+      const movies1 = await Movie.find();
+      const movies2 = await Movie2.find();
+      const movies3 = await Movie3.find();
+      const movies4 = await Movie4.find();
+      res.render('admin', { movies1, movies2, movies3, movies4 }); // Pass movie data to the template
+    } catch (error) {
+      console.error(error);
+      res.render('error'); // Handle errors appropriately
+    }
+  });
+
+// Pindahkan rute insertmovie ke movieController
+app.post('/insertmovie', movieController.insertMovie);
+
+app.post('/updatemovie', movieController.updatemovie);
+
+// Pindahkan rute upload ke movieController
+const upload = multer({ dest: 'uploads/' });
+app.post('/upload', upload.single('jsonFile'), movieController.uploadJSON);
+
+app.get('/delete/:movieId', movieController.deleteMovie);
+
+app.get('/getmovie/:id', async (req, res) => {
+  try {
+    const movieId = req.params.id;
+
+    // Jalankan pencarian pada semua model secara paralel
+    const [movie1, movie2, movie3, movie4] = await Promise.all([
+      Movie.findById(movieId),
+      Movie2.findById(movieId),
+      Movie3.findById(movieId),
+      Movie4.findById(movieId)
+    ]);
+
+    // Gabungkan hasil pencarian dari semua model
+    const movies = [movie1, movie2, movie3, movie4].filter(movie => movie !== null);
+
+    // Cek apakah ada film yang ditemukan
+    if (movies.length > 0) {
+      res.json(movies); // Mengembalikan data film dalam format JSON
+    } else {
+      res.status(404).send('Movie not found'); // Mengembalikan status 404 jika film tidak ditemukan
+    }
+  } catch (error) {
+    res.status(500).send('Error retrieving movie'); // Mengembalikan status 500 jika terjadi kesalahan server
+  }
+});
+
 
   mongoose.connect(mongoURI, { }) // Menghubungkan ke MongoDB menggunakan URI yang ditentukan
   .then(() => { // Mengonfirmasi koneksi berhasil
@@ -159,7 +224,9 @@ app.get('/logout', (req, res) => {
 app.get('/watch', (req, res) => {
     res.render('watch');
     });
-
+app.get('/admin', (req, res) => {
+    res.render('admin', { messages: req.flash() });
+});
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
