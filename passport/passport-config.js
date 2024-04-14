@@ -1,13 +1,11 @@
 const LocalStrategy = require("passport-local").Strategy; // Mengimpor modul LocalStrategy dari passport-local
 const bcrypt = require("bcrypt"); // Mengimpor modul bcrypt untuk melakukan hashing password
-
+const User = require("../models/user");
 async function initialize(passport, getUserByEmail, getUserById) { 
-  
-  async function authenticateUsers(email, password, done){ 
+  async function authenticateUsers(email, password, done) { 
     try { 
       const user = await getUserByEmail(email); 
       
-      //Pesan error disampaikan dari objek message yang dikirimkan melalui callback done
       if (!user) { 
         return done(null, false, { message: "Email not found." });  //return done digunakan untuk memberi tahu Passport-config.js tentang hasil autentikasi. Fungsi done adalah sebuah callback yang harus dipanggil setelah selesai memproses autentikasi.
       }
@@ -24,35 +22,55 @@ async function initialize(passport, getUserByEmail, getUserById) {
       const isMatch = await bcrypt.compare(password, user.password); 
       
       if (isMatch) {
-        // Redirect ke halaman admin jika pengguna adalah admin
         if (user.admin) {
           return done(null, user, { admin: true });
         } else {
-          // Redirect ke halaman utama jika pengguna bukan admin
           return done(null, user);
         }
       } else {
         return done(null, false, { message: "Wrong Password" });
       }
     } catch (err) {
-      console.error("Error saat melakukan autentikasi:", err);
+      console.error("Error during authentication:", err);
       return done(err);
     }
-  };
+  }
 
-  // Menggunakan strategi autentikasi lokal (LocalStrategy) dengan menggunakan email sebagai username field
+  async function createInitialUser() {
+    try {
+      const existingUser = await User.findOne({ email: '111@admin.com' });
+      if (!existingUser) {
+        const password = '11111';
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = new User({
+          name: 'admin',
+          email: '111@admin.com',
+          password: hashedPassword,
+          uang: 0,
+          alrbuy: []
+        });
+        await newUser.save();
+        console.log('Admin Account added successfully.');
+      } else {
+        console.log('Admin Account already exists.');
+      }
+    } catch (error) {
+      console.error('Error adding initial user:', error);
+    }
+  }
+
+  createInitialUser();
+
   passport.use(new LocalStrategy({ usernameField: "email" }, authenticateUsers)); 
 
-  // Meng-serialize user menjadi ID
   passport.serializeUser((user, done) => done(null, user.id)); 
 
-  // Meng-deserialize user berdasarkan ID
-  passport.deserializeUser((id, done) => { 
+  passport.deserializeUser(async (id, done) => { 
     try { 
-      const user = getUserById(id);
+      const user = await getUserById(id); // Wait for getUserById to complete
       done(null, user); 
     } catch (err) { 
-      console.error("Error saat melakukan deserialisasi pengguna:", err); 
+      console.error("Error during user deserialization:", err); 
       done(err); 
     }
   });

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twice</title>
+    <link rel="stylesheet" href="css/payment.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="icon" href="img/movie-solid-24.png" type="image/x-icon">
+</head>
+<body>
+
+    <% if (isLoggedIn) { %>
+        <%- include('layouts/header_logout.ejs') %> 
+    <% } else { %>
+        <%- include('layouts/header_login.ejs') %> 
+    <% } %>
+
+    <% if (selectedMovie) { %>
+    <div class="mainscreen">
+        <!-- <img src="https://image.freepik.com/free-vector/purple-background-with-neon-frame_52683-34124.jpg"  class="bgimg " alt="">--> 
+          <div class="card">
+            <div class="leftside">
+              <img
+                src="img/<%= selectedMovie.poster %>"
+                class="product"
+              />
+            </div>
+            <div class="rightside">
+                
+                <form action="/checkout?movieId=<%= selectedMovie._id %>" method="post">
+                <div class="title">
+                    <h1>CheckOut</h1>
+                    <div class="money">
+                        <strong>Your Money</strong> <br>
+                        <span>$<%= userMoney %></span>
+                    </div>
+                </div>
+                <div class="title2">
+                    <h2>Information</h2>
+                    <p><%= selectedMovie.name %></p>
+                </div>
+                
+                    <div class="more-about-movie">
+                        <span><%= selectedMovie.quality %></span>
+                        <div class="rating">
+                            <%= selectedMovie.rating %> <i class='bx bxs-star' > </i> <!-- <i class='bx bxs-star' ></i> <i class='bx bxs-star' ></i> <i class='bx bxs-star-half' ></i> <i class='bx bx-star' ></i> -->
+                        </div>
+                        <span><%= selectedMovie.releasedate %></span>
+                        <span><%= selectedMovie.duration %></span>
+                    </div>
+
+                    <div class="language">
+                        <span><%= selectedMovie.language %></span>
+                    </div>
+
+
+                    <div class="category">
+                        <strong>Category</strong> <br>
+                        <a href="#"><%= selectedMovie.genre %></a>
+                    </div>
+                    <div class="price">
+                        <strong>Price</strong> <br>
+                        <a href="#"> $<%= selectedMovie.harga %></a>
+                    </div>
+                    <div class="movie-details">
+                        <p><%= selectedMovie.description %></p>
+                    </div>
+                    <button type="submit" class="button">CheckOut</button>
+                </form>
+            </div>
+          </div>
+        </div>    
+        <% } %>
+
+        <%- include('layouts/footer.ejs') %> 
+</body>
+</html>

@@ -85,14 +85,24 @@
             <% for (const movie of movies) { %>
                 <div class="box">
                   <div class="box-img">
-                    <a href="/buy?movieId=<%= movie._id %>"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                    <% if (isLoggedIn && moviesBought.includes(movie._id)) { %>
+                      <a href="/watch?movieId=<%= movie._id %>"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                    <% } else { %>
+                      <a href="/buy?movieId=<%= movie._id %>"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                    <% } %>
                   </div>
                   <h3><%= movie.name %></h3>
                   <span><%= movie.rating %> | <%= movie.genre %></span>
-                  <% if (movie.harga > 0) { %>  <h4>$<%= movie.harga %></h4>
+                  <% if (movie.harga > 0) { %>
+                    <% if (isLoggedIn && moviesBought.includes(movie._id)) { %>
+                      <a href="/watch?movieId=<%= movie._id %>"></a>
+                    <% } else { %>
+                      <h4>$<%= movie.harga %></h4>
+                    <% } %>
                   <% } %>
                 </div>
               <% } %>
+              
 <!-- 
                 <div class="box">
                     <div class="box-img">

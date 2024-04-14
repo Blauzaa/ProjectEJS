@@ -74,6 +74,7 @@ app.post("/login", passport.authenticate("local", {
 
 
 
+
 // Rute untuk logout pengguna
 app.get('/logout', (req, res) => {
   req.logout(() => {
@@ -86,31 +87,50 @@ app.get('/logout', (req, res) => {
 
 // Rute untuk halaman utama
 app.get('/', async (req, res) => {
-    try {
-      const movies = await getMovies();
-      const comingSoon = await getComingSoonMovies();
-      const freeMovies = await getFreeMovies();
-      const mainMovies = await getMainMovies();
-      const isLoggedIn = !!req.user; // Check if user is logged in
-      res.render('index', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn }); // Pass movie data to the template
-    } catch (error) {
-      console.error(error);
-      res.render('error'); // Handle errors appropriately
-    }
-  });
-// Rute untuk menampilkan detail film di halaman watch
-  app.get('/watch', async (req, res) => {
-    try {
-        const movieId = req.query.movieId; // Mengambil ID film dari parameter query
-        // Gunakan ID untuk mengambil data film dari database
-        const selectedMovie = await Movie3.findById(movieId);
-        const isLoggedIn = !!req.user; // Check if user is logged in
-        res.render('watch', { selectedMovie, isLoggedIn }); // Pass movie data to the template
-    } catch (error) {
-        console.error(error);
-        res.render('error'); // Handle errors appropriately
-    }
+  try {
+    const movies = await getMovies();
+    const comingSoon = await getComingSoonMovies();
+    const freeMovies = await getFreeMovies();
+    const mainMovies = await getMainMovies();
+    const isLoggedIn = !!req.user; // Check if user is logged in
+    const user = req.user;
+    const moviesBought = user ? user.alrbuy : [];
+    res.render('index', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn, moviesBought }); // Pass movie data to the template
+  } catch (error) {
+    console.error(error);
+    res.render('error'); // Handle errors appropriately
+  }
 });
+// Rute untuk menampilkan detail film di halaman watch
+app.get('/watch', async (req, res) => {
+  try {
+    const movieId = req.query.movieId; // Mengambil ID film dari parameter query
+    
+    // Gunakan ID untuk mencari data film dari keempat koleksi
+    const selectedMovie = await Promise.all([
+      Movie.findById(movieId),
+      Movie2.findById(movieId),
+      Movie3.findById(movieId),
+      Movie4.findById(movieId)
+    ]);
+
+    // Loop through the result to find the movie from the first collection where it's found
+    let foundMovie;
+    for (const movie of selectedMovie) {
+      if (movie !== null) {
+        foundMovie = movie;
+        break;
+      }
+    }
+    
+    const isLoggedIn = !!req.user; // Check if user is logged in
+    res.render('watch', { selectedMovie: foundMovie, isLoggedIn }); // Pass movie data to the template
+  } catch (error) {
+    console.error(error);
+    res.render('error'); // Handle errors appropriately
+  }
+});
+
 // Rute untuk menampilkan detail film di halaman comingsoon
   app.get('/comingsoon', async (req, res) => {
     try {
@@ -137,6 +157,94 @@ app.get('/', async (req, res) => {
       res.render('error'); // Handle errors appropriately
     }
   });
+
+
+  app.get('/payment', async (req, res) => {
+    try {
+        // Pastikan pengguna sudah login dan req.user tidak null
+        if (req.isAuthenticated()) {
+            // Dapatkan informasi pengguna dari objek req.user yang sudah di-deserialize
+            const user = req.user;
+
+            // Dapatkan ID film dari parameter query
+            const movieId = req.query.movieId;
+
+            // Periksa apakah pengguna sudah membeli film tersebut sebelumnya
+            if (user.alrbuy.includes(movieId)) {
+                // Jika sudah membeli, langsung arahkan ke halaman watch dengan ID film tersebut
+                res.redirect(`/watch?movieId=${movieId}`);
+                return;
+            }
+
+            // Dapatkan data film dari database
+            const selectedMovie = await Movie.findById(movieId);
+
+            // Render halaman pembayaran dengan menyertakan data uang
+            res.render('payment', { selectedMovie, isLoggedIn: true, userMoney: user.uang });
+        } else {
+            // Jika pengguna belum login, redirect ke halaman login
+            res.redirect('/login');
+        }
+    } catch (error) {
+        console.error(error);
+        res.render('error'); // Handle errors appropriately
+    }
+});
+
+
+
+// Rute untuk menangani checkout
+// Rute untuk menangani checkout
+app.post('/checkout', async (req, res) => {
+  try {
+    const movieId = req.query.movieId; // Mengambil ID film dari parameter query
+    const selectedMovie = await Movie.findById(movieId); // Mengambil data film dari database
+
+    if (!selectedMovie) {
+      return res.status(404).send('Movie not found');
+    }
+
+    // Dapatkan informasi pengguna dari objek req.user yang sudah di-deserialize
+    const user = req.user;
+
+    // Periksa apakah pengguna memiliki cukup uang untuk membeli film
+    if (user.uang < selectedMovie.harga) {
+      return res.status(403).send('Insufficient funds');
+    }
+
+    // Periksa apakah pengguna sudah memiliki film tersebut
+    if (user.alrbuy.includes(movieId)) {
+      // Jika sudah, langsung arahkan ke halaman watch
+      res.redirect(`/watch?movieId=${movieId}`);
+      return;
+    }
+
+    // Kurangi uang pengguna dengan harga film
+    user.uang -= selectedMovie.harga;
+
+    // Tambahkan ID film yang sudah dibeli ke dalam array alrbuy pengguna
+    user.alrbuy.push(movieId);
+
+    // Simpan perubahan pada pengguna ke dalam database
+    await user.save();
+
+    // Cari akun admin yang terkait
+    const adminUser = await User.findOne({ email: '111@admin.com' });
+
+    // Tambahkan jumlah uang yang sudah dikurangi dari pengguna ke saldo uang admin
+    adminUser.uang += selectedMovie.harga;
+
+    // Simpan perubahan saldo uang admin ke dalam database
+    await adminUser.save();
+
+    // Redirect pengguna ke halaman watch setelah pembayaran berhasil
+    res.redirect(`/watch?movieId=${movieId}`);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 
   app.get('/admin', async (req, res) => {
     try {
@@ -192,8 +300,9 @@ app.get('/getmovie/:id', async (req, res) => {
 });
 
 
-  mongoose.connect(mongoURI, { }) // Menghubungkan ke MongoDB menggunakan URI yang ditentukan
-  .then(() => { // Mengonfirmasi koneksi berhasil
+
+mongoose.connect(mongoURI, {})
+  .then(async () => {
     console.log('MongoDB connected successfully.');
   })
   .catch(err => console.error('MongoDB connection error:', err));
@@ -231,7 +340,11 @@ app.get('/watch', (req, res) => {
 app.get('/admin', (req, res) => {
     res.render('admin', { messages: req.flash() });
 });
-
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.get('/payment', (req, res) => {
+    res.render('payment');
 });
+
+    // Mulai server
+    app.listen(port, () => {
+      console.log(`Server running at http://localhost:${port}`);
+    });

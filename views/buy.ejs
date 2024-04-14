@@ -39,7 +39,7 @@
                             <%= selectedMovie.rating %> <i class='bx bxs-star' > </i> <!-- <i class='bx bxs-star' ></i> <i class='bx bxs-star' ></i> <i class='bx bxs-star-half' ></i> <i class='bx bx-star' ></i> -->
                         </div>
                         <span><%= selectedMovie.releasedate %></span>
-                        <span><%= selectedMovie.quality %></span>
+                        <span><%= selectedMovie.duration %></span>
                     </div>
 
                     <div class="language">
@@ -55,7 +55,7 @@
                     </div>
                     <div class="buttons-container">
                         <a href="#" class="watch-btn">Watch Trailer</a>
-                        <a href="" class="btn">Buy Now</a>
+                        <a href="/payment?movieId=<%= selectedMovie._id %>" class="btn">Buy Now</a>
                     </div>
                 </div>
                     

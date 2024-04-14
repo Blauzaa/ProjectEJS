@@ -13,5 +13,6 @@ const userSchema = new mongoose.Schema({
 // Buat model User berdasarkan schema yang telah didefinisikan
 const User = mongoose.model('User', userSchema);
 
+
 // Ekspor model User agar dapat digunakan di file lain
 module.exports = User;
