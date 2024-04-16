@@ -58,7 +58,7 @@ async function getComingSoonMovies() { // Mendapatkan semua film yang akan datan
 const insertMovie = async (req, res) => {
   try {
     // Ambil data yang dikirimkan dari form
-    const { name, rating, genre, harga, poster, video, quality, releasedate, duration, language, description, posterls, ss1, ss2, ss3, ss4, seasons, category } = req.body;
+    const { name, rating, genre, harga, poster, video, quality, releasedate, duration, language, description, posterls, ss1, ss2, ss3, ss4, seasons, trailer, category } = req.body;
 
     // Tentukan model yang akan digunakan berdasarkan kategori
     let movieModel;
@@ -105,7 +105,8 @@ const insertMovie = async (req, res) => {
         ss2,
         ss3,
         ss4,
-        seasons: seasons.split(',').map(Number)
+        seasons: seasons.split(',').map(Number),
+        trailer
       });
 
       await newMovie.save();
@@ -217,7 +218,7 @@ const deleteMovie = async (req, res) => {
 
 const updatemovie = async (req, res) => {
   try {
-    const { id, name, rating, genre, harga, poster, video, quality, releasedate, duration, language, description, posterls, ss1, ss2, ss3, ss4, seasons } = req.body;
+    const { id, name, rating, genre, harga, poster, video, quality, releasedate, duration, language, description, posterls, ss1, ss2, ss3, ss4, seasons, trailer } = req.body;
 
     // Cari film berdasarkan ID
     let movieModel;
@@ -263,7 +264,8 @@ const updatemovie = async (req, res) => {
       ss2,
       ss3,
       ss4,
-      seasons: seasons.split(',').map(Number)
+      seasons: seasons.split(',').map(Number),
+      trailer
     });
 
     req.flash("success", "Film berhasil diperbarui.");

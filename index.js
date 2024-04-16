@@ -301,6 +301,8 @@ app.get('/getmovie/:id', async (req, res) => {
 
 
 
+
+
 mongoose.connect(mongoURI, {})
   .then(async () => {
     console.log('MongoDB connected successfully.');

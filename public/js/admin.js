@@ -91,6 +91,7 @@ $(document).ready(function() {
         $('#myModal' + movieId + ' #ss3').val(data[0].ss3);
         $('#myModal' + movieId + ' #ss4').val(data[0].ss4);
         $('#myModal' + movieId + ' #seasons').val(data[0].seasons);
+        $('#myModal' + movieId + ' #trailer').val(data[0].trailer);
         
         // Menampilkan modal yang sesuai dengan ID film
         $('#myModal' + movieId).show();

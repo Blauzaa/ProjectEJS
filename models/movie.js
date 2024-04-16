@@ -19,6 +19,7 @@ const movieSchema = new mongoose.Schema({
   ss3: String,
   ss4: String,
   seasons: [Number],
+  trailer: String,
 });
 // Buat model Movie berdasarkan schema yang telah didefinisikan
 const Movie = mongoose.model('Movie', movieSchema); 
