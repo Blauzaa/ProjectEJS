@@ -174,7 +174,7 @@ const uploadJSON = async (req, res) => {
   try {
     // Baca data dari file JSON yang diunggah
     const data = fs.readFileSync(filePath, 'utf8');
-
+    fs.unlinkSync(filePath);
     // Parse data JSON
     const movies = JSON.parse(data);
 
