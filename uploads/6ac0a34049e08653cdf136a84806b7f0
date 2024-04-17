@@ -1,7 +1,6 @@
 [
     {
         "name": "Youth of May",
-        "tahun" : 2021,
         "rating": 8.8,
         "genre": "Drama, Sejarah, Romance, Melodrama, Drama periode sejarah",
         "harga": 7.50,
@@ -21,8 +20,7 @@
         "trailer" : "./ACE.mp4"
     },
     {
-        "name": "Hospital Playlist",
-        "tahun" : 2020,
+        "name": "My Love From The Star",
         "rating": 8.8,
         "genre": "Drama Korea, Drama, Romance, Comedy",
         "harga": 7.50,
@@ -42,8 +40,7 @@
         "trailer" : "./ACE.mp4"
     },
     {
-        "name": "The God of High School",
-        "tahun" : 2020,
+        "name": "The God of High School ",
         "rating": 8.8,
         "genre": "Action, Manhwa, anime",
         "harga": 7.50,

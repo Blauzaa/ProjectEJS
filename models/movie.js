@@ -3,6 +3,7 @@ const mongoose = require('mongoose'); // Import library Mongoose
 // Definisikan schema untuk model Movie
 const movieSchema = new mongoose.Schema({
   name: String,
+  tahun: Number,
   rating: Number,
   genre: String,
   harga: Number, 

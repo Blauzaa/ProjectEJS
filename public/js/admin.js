@@ -75,6 +75,7 @@ $(document).ready(function() {
         console.log(data);
         // Memasukkan data film ke dalam input modal yang sesuai
         $('#myModal' + movieId + ' #name').val(data[0].name);
+        $('#myModal' + movieId + ' #tahun').val(data[0].tahun);
         $('#myModal' + movieId + ' #rating').val(data[0].rating);
         $('#myModal' + movieId + ' #genre').val(data[0].genre);
         $('#myModal' + movieId + ' #harga').val(data[0].harga);

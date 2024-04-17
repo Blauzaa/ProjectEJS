@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 // const movieFile4 = `${moviesDir}/mainmovie.json`; // Path menuju file JSON data film
 const multer = require('multer');
 const flash = require("express-flash");
-
+const axios = require('axios');
 
 // Fungsi untuk mendapatkan semua film dari koleksi Movie
 async function getMovies(mongoURI) {
@@ -53,12 +53,62 @@ async function getComingSoonMovies() { // Mendapatkan semua film yang akan datan
     }
   }
   
+// Fungsi untuk mendapatkan trailer dari TMDB API berdasarkan judul drama Korea
+async function getMovieDetailsFromOMDb(title, year) { // Menambahkan parameter 'year'
+  try {
+    const apiKey = 'c028c167';
 
+    // Buat URL pencarian OMDb berdasarkan judul film dan tahun
+    const searchUrl = `http://www.omdbapi.com/?apikey=${apiKey}&t=${encodeURIComponent(title)}&y=${year}`;
 
+    // Lakukan permintaan HTTP ke URL pencarian
+    const searchResponse = await axios.get(searchUrl);
+
+    // Periksa apakah pencarian berhasil
+    if (searchResponse.data.Response !== 'True') {
+      console.error(`OMDb search failed for title: ${title}`);
+      return null; // Tidak ada trailer yang ditemukan
+    }
+
+    // Ekstrak IMDb ID dari respons pencarian
+    const imdbID = searchResponse.data.imdbID;
+
+    // Ubah IMDb ID menjadi URL trailer IMDb
+    const trailerUrl = imdbIdToTrailerUrl(imdbID);
+
+    // Ekstrak informasi tambahan dari respons pencarian
+    const movieDetails = {
+      released: searchResponse.data.Released,
+      runtime: searchResponse.data.Runtime,
+      genre: searchResponse.data.Genre,
+      plot: searchResponse.data.Plot,
+      language: searchResponse.data.Language,
+      poster: searchResponse.data.Poster,
+      imdbrating: searchResponse.data.imdbRating
+    };
+
+    // Kembalikan trailer URL dan informasi tambahan
+    return { trailerUrl, ...movieDetails };
+  } catch (error) {
+    console.error('Error getting trailer and movie details from OMDb:', error);
+    return null; // Tangani kesalahan dengan tepat
+  }
+}
+
+// Fungsi untuk mengonversi IMDb ID menjadi URL trailer IMDb
+function imdbIdToTrailerUrl(imdbId) {
+  const baseUrl = 'https://www.imdb.com/title';
+  const trailerUrl = `${baseUrl}/${imdbId}/`;
+  return trailerUrl;
+}
+
+// Fungsi untuk menyisipkan film baru ke dalam database
 const insertMovie = async (req, res) => {
   try {
-    // Ambil data yang dikirimkan dari form
-    const { name, rating, genre, harga, poster, video, quality, releasedate, duration, language, description, posterls, ss1, ss2, ss3, ss4, seasons, trailer, category } = req.body;
+    const { name, tahun, rating, genre, harga, poster, video, quality, releasedate, duration, language, description, posterls, ss1, ss2, ss3, ss4, seasons, category } = req.body;
+
+    // Ambil trailer dari OMDb
+    const movieDetails = await getMovieDetailsFromOMDb(name, tahun);
 
     // Tentukan model yang akan digunakan berdasarkan kategori
     let movieModel;
@@ -79,102 +129,123 @@ const insertMovie = async (req, res) => {
         throw new Error('Invalid category');
     }
 
-    // Cek apakah data sudah ada di database
-    const existingMovie = await movieModel.findOne({ name });
+    // Buat objek film baru dengan trailer
+    const newMovie = new movieModel({
+      name,
+      tahun,
+      rating: movieDetails.imdbrating,
+      genre: movieDetails.genre,
+      harga,
+      poster: movieDetails.poster,
+      video,
+      quality,
+      releasedate: movieDetails.released,
+      duration: movieDetails.runtime,
+      language: movieDetails.language,
+      description: movieDetails.plot,
+      posterls,
+      ss1,
+      ss2,
+      ss3,
+      ss4,
+      seasons: seasons.split(',').map(Number),
+      trailer: trailer ? trailer.trailerUrl : null, // Simpan URL trailer dari OMDb
+    });
 
-    // Jika data sudah ada, kirimkan pesan bahwa film sudah ada
-    if (existingMovie) {
-      req.flash("error", "Film sudah ada di database.");
-      return res.redirect('/admin'); // Redirect kembali ke halaman admin
-    } else {
-      // Buat objek film baru dan simpan ke dalam database
-      const newMovie = new movieModel({
-        name,
-        rating,
-        genre,
-        harga,
-        poster,
-        video,
-        quality,
-        releasedate,
-        duration,
-        language,
-        description,
-        posterls,
-        ss1,
-        ss2,
-        ss3,
-        ss4,
-        seasons: seasons.split(',').map(Number),
-        trailer
-      });
+    // Simpan film ke database
+    await newMovie.save();
 
-      await newMovie.save();
-      
-      // Kirimkan respons bahwa film berhasil ditambahkan
-      req.flash("success", "Film berhasil ditambahkan.");
-      res.redirect('/admin'); // Redirect ke halaman admin setelah menambahkan film
-    }
-
+    // Kirimkan respons bahwa film berhasil ditambahkan
+    req.flash("success", "Film berhasil ditambahkan.");
+    res.redirect('/admin'); // Redirect ke halaman admin setelah menambahkan film
   } catch (error) {
+    console.error(error);
     req.flash("error", "Error inserting movie: " + error.message); // Sertakan pesan kesalahan dalam pesan flash
     res.redirect('/admin'); // Redirect ke halaman admin jika terjadi kesalahan
   }
 };
 
-
+// Fungsi untuk mengunggah data film dari file JSON ke dalam database
+// Loop through each movie entry from the JSON file
 const uploadJSON = async (req, res) => {
   const { category } = req.body;
   const filePath = req.file.path;
 
   try {
-      // Baca data dari file JSON yang diunggah
-      const data = fs.readFileSync(filePath, 'utf8');
+    // Baca data dari file JSON yang diunggah
+    const data = fs.readFileSync(filePath, 'utf8');
 
-      // Parse data JSON
-      const movies = JSON.parse(data);
+    // Parse data JSON
+    const movies = JSON.parse(data);
 
-      // Tentukan model yang akan digunakan berdasarkan kategori
-      let movieModel;
-      switch (category) {
-          case '1':
-              movieModel = Movie;
-              break;
-          case '2':
-              movieModel = Movie2;
-              break;
-          case '3':
-              movieModel = Movie3;
-              break;
-          case '4':
-              movieModel = Movie4;
-              break;
-          default:
-              throw new Error('Invalid category');
-      }
+    // Tentukan model yang akan digunakan berdasarkan kategori
+    let movieModel;
+    switch (category) {
+      case '1':
+        movieModel = Movie;
+        break;
+      case '2':
+        movieModel = Movie2;
+        break;
+      case '3':
+        movieModel = Movie3;
+        break;
+      case '4':
+        movieModel = Movie4;
+        break;
+      default:
+        throw new Error('Invalid category');
+    }
 
-      // Loop through each movie entry from the JSON file
-      for (const movieData of movies) {
-          // Check if the movie already exists in the database
-          const existingMovie = await movieModel.findOne({ name: movieData.name });
+    // Loop through each movie entry from the JSON file
+    // Loop through each movie entry from the JSON file
+for (const movieData of movies) {
+  // Check if the movie already exists in the database
+  const existingMovie = await movieModel.findOne({ name: movieData.name });
 
-          // If the movie already exists, skip to the next movie
-          if (existingMovie) {
-              console.log(`Film '${movieData.name}' already exists in the database. Skipping...`);
-              continue;
-          }
+  // If the movie already exists, skip to the next movie
+  if (existingMovie) {
+    console.log(`Film '${movieData.name}' already exists in the database. Skipping...`);
+    continue;
+  }
 
-          // Create a new movie object and save it to the database
-          const newMovie = new movieModel(movieData);
-          await newMovie.save();
-      }
+  // Ambil trailer dan informasi film dari OMDb
+  const movieDetails = await getMovieDetailsFromOMDb(movieData.name, movieData.tahun);
 
-      // Kirimkan respons bahwa film berhasil ditambahkan
-      req.flash("succes", "File JSON berhasil diunggah dan data disimpan.");
-      res.redirect('/admin'); // Redirect ke halaman admin setelah menambahkan data
+  // Tambahkan informasi film ke data film sebelum menyimpannya ke database
+  const newMovieData = {
+    name: movieData.name,
+    tahun: movieData.tahun,
+    rating: movieDetails.imdbrating,
+    genre: movieDetails.genre,
+    harga: movieData.harga,
+    poster: movieDetails.poster,
+    video: movieData.video,
+    quality: movieData.quality,
+    releasedate: movieDetails.released,
+    duration: movieDetails.runtime,
+    language: movieDetails.language,
+    description: movieDetails.plot,
+    posterls: movieData.posterls,
+    ss1: movieData.ss1,
+    ss2: movieData.ss2,
+    ss3: movieData.ss3,
+    ss4: movieData.ss4,
+    seasons: movieData.seasons,
+    trailer: movieDetails.trailerUrl,
+  };
+
+  // Create a new movie object and save it to the database
+  const newMovie = new movieModel(newMovieData);
+  await newMovie.save();
+}
+
+    // Kirimkan respons bahwa film berhasil ditambahkan
+    req.flash("success", "File JSON berhasil diunggah dan data disimpan.");
+    res.redirect('/admin'); // Redirect ke halaman admin setelah menambahkan data
   } catch (error) {
-      req.flash("errors", "Error uploading JSON file: " + error.message); // Sertakan pesan kesalahan dalam pesan flash
-      res.redirect('/admin'); // Redirect ke halaman admin jika terjadi kesalahan
+    req.flash("errors", "Error uploading JSON file: " + error.message); // Sertakan pesan kesalahan dalam pesan flash
+    res.redirect('/admin'); // Redirect ke halaman admin jika terjadi kesalahan
   }
 };
 
@@ -218,7 +289,7 @@ const deleteMovie = async (req, res) => {
 
 const updatemovie = async (req, res) => {
   try {
-    const { id, name, rating, genre, harga, poster, video, quality, releasedate, duration, language, description, posterls, ss1, ss2, ss3, ss4, seasons, trailer } = req.body;
+    const { id, name, tahun, rating, genre, harga, poster, video, quality, releasedate, duration, language, description, posterls, ss1, ss2, ss3, ss4, seasons, trailer } = req.body;
 
     // Cari film berdasarkan ID
     let movieModel;
@@ -249,6 +320,7 @@ const updatemovie = async (req, res) => {
     // Update data film
     await movieModel.findByIdAndUpdate(id, {
       name,
+      tahun,
       rating,
       genre,
       harga,

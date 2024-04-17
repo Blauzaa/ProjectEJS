@@ -25,12 +25,12 @@
             <% for (const movie of mainMovies) { %>
                 <div class="swiper-slide container">
                 
-                    <img src="img/<%= movie.poster %>" alt="<%= movie.name %>">
+                    <img src="img/<%= movie.posterls %>" alt="<%= movie.name %>">
                     <div class="home-text">
                         <span><%= movie.genre %></span>
                         <h1><%= movie.name %></h1>
-                        <a href="" class="btn"> Watch now</a>
-                        <a href="" class="play">
+                        <a href="/watch?movieId=<%= movie._id %>" class="btn"> Watch now</a>
+                        <a href="<%= movie.trailer %>" class="play">
                             <i class='bx bx-play' ></i>
                         </a>
                     </div>
@@ -86,9 +86,9 @@
                 <div class="box">
                   <div class="box-img">
                     <% if (isLoggedIn && moviesBought.includes(movie._id)) { %>
-                      <a href="/watch?movieId=<%= movie._id %>"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                      <a href="/watch?movieId=<%= movie._id %>"><img src="<%= movie.poster %>" alt="<%= movie.name %>"></a>
                     <% } else { %>
-                      <a href="/buy?movieId=<%= movie._id %>"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                      <a href="/buy?movieId=<%= movie._id %>"><img src="<%= movie.poster %>" alt="<%= movie.name %>"></a>
                     <% } %>
                   </div>
                   <h3><%= movie.name %></h3>
@@ -216,7 +216,7 @@
                 <% for (const movie of comingSoon) { %>
                     <div class="swiper-slide box">
                       <div class="box-img">
-                        <a href="/comingsoon?movieId=<%= movie._id %>"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                        <a href="/comingsoon?movieId=<%= movie._id %>"><img src="<%= movie.poster %>" alt="<%= movie.name %>"></a>
                       </div>
                       <h3><%= movie.name %></h3>
                       <span><%= movie.rating %> | <%= movie.genre %></span>
@@ -339,7 +339,7 @@
                 <% for (const movie of freeMovies) { %>
                     <div class="swiper-slide box">
                       <div class="box-img">
-                        <a href="/watch?movieId=<%= movie._id %>"><img src="img/<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                        <a href="/watch?movieId=<%= movie._id %>"><img src="<%= movie.poster %>" alt="<%= movie.name %>"></a>
                       </div>
                       <h3><%= movie.name %></h3>
                       <span><%= movie.rating %> Season | <%= movie.genre %></span>

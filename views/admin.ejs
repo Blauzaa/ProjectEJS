@@ -83,6 +83,7 @@
           <div class="insert_data_container">
             <form action="/insertmovie" method="POST">
               <input type="text" name="name" placeholder="Nama Film" />
+              <input type="text" name="tahun" placeholder="Tahun release" />
               <input type="text" name="rating" placeholder="Rating" />
               <input type="text" name="genre" placeholder="Genre" />
               <input type="text" name="harga" placeholder="Harga" />
@@ -147,6 +148,7 @@
             <thead>
               <tr>
                 <th>Nama Film</th>
+                <th>Tahun</th>
                 <th>Rating</th>
                 <th>Genre</th>
                 <th>Harga</th>
@@ -169,29 +171,26 @@
             </thead>
             <tbody>
               <% movies1.forEach((movie, index) => { %>
-              <tr>
-                <td><%= movie.name %></td>
-                <td><%= movie.rating %></td>
-                <td><%= movie.genre %></td>
-                <td><%= movie.harga %></td>
-                <td><%= movie.poster %></td>
-                <td><%= movie.video %></td>
-                <td><%= movie.quality %></td>
-                <td><%= movie.releasedate %></td>
-                <td><%= movie.duration %></td>
-                <td><%= movie.language %></td>
-                <td>
-                  <%= movie.description.length > 30 ?
-                  movie.description.substring(0, 30) + '...' : movie.description
-                  %>
-                </td>
-                <td><%= movie.posterls %></td>
-                <td><%= movie.ss1 %></td>
-                <td><%= movie.ss2 %></td>
-                <td><%= movie.ss3 %></td>
-                <td><%= movie.ss4 %></td>
-                <td><%= movie.seasons %></td>
-                <td><%= movie.trailer %></td>
+                <tr>
+                  <td><%= movie.name %></td>
+                  <td><%= movie.tahun %></td>
+                  <td><%= movie.rating %></td>
+                  <td><%= movie.genre %></td>
+                  <td><%= movie.harga %></td>
+                  <td><%= movie.poster.length > 30 ? movie.poster.substring(0, 30) + '...' : movie.poster %></td>
+                  <td><%= movie.video.length > 30 ? movie.video.substring(0, 30) + '...' : movie.video %></td>
+                  <td><%= movie.quality %></td>
+                  <td><%= movie.releasedate %></td>
+                  <td><%= movie.duration %></td>
+                  <td><%= movie.language %></td>
+                  <td><%= movie.description.length > 30 ? movie.description.substring(0, 30) + '...' : movie.description %></td>
+                  <td><%= movie.posterls %></td>
+                  <td><%= movie.ss1 %></td>
+                  <td><%= movie.ss2 %></td>
+                  <td><%= movie.ss3 %></td>
+                  <td><%= movie.ss4 %></td>
+                  <td><%= movie.seasons %></td>
+                  <td><%= movie.trailer.length > 30 ? movie.trailer.substring(0, 30) + '...' : movie.trailer %></td>
                 <td>
                   <div class="dropdown">
                     <a
@@ -225,6 +224,7 @@
                             <form action="/updatemovie" method="POST">
                               <input type="hidden" name="id" value="<%= movie._id %>">
                               <input type="text" class="center-placeholder" id="name" name="name" placeholder="Nama Film" />
+                              <input type="text" class="center-placeholder" id="tahun" name="tahun" placeholder="Tahun Film" />
                               <input type="text" class="center-placeholder" id="rating" name="rating" placeholder="Rating" />
                               <input type="text" class="center-placeholder" id="genre" name="genre" placeholder="Genre" />
                               <input type="text" class="center-placeholder" id="harga" name="harga" placeholder="Harga" />
@@ -275,6 +275,7 @@
             <thead>
               <tr>
                 <th>Nama Film</th>
+                <th>Tahun</th>
                 <th>Rating</th>
                 <th>Genre</th>
                 <th>Harga</th>
@@ -297,29 +298,26 @@
             </thead>
             <tbody>
               <% movies2.forEach((movie, index) => { %>
-              <tr>
-                <td><%= movie.name %></td>
-                <td><%= movie.rating %></td>
-                <td><%= movie.genre %></td>
-                <td><%= movie.harga %></td>
-                <td><%= movie.poster %></td>
-                <td><%= movie.video %></td>
-                <td><%= movie.quality %></td>
-                <td><%= movie.releasedate %></td>
-                <td><%= movie.duration %></td>
-                <td><%= movie.language %></td>
-                <td>
-                  <%= movie.description.length > 30 ?
-                  movie.description.substring(0, 30) + '...' : movie.description
-                  %>
-                </td>
-                <td><%= movie.posterls %></td>
-                <td><%= movie.ss1 %></td>
-                <td><%= movie.ss2 %></td>
-                <td><%= movie.ss3 %></td>
-                <td><%= movie.ss4 %></td>
-                <td><%= movie.seasons %></td>
-                <td><%= movie.trailer %></td>
+                <tr>
+                  <td><%= movie.name %></td>
+                  <td><%= movie.tahun %></td>
+                  <td><%= movie.rating %></td>
+                  <td><%= movie.genre %></td>
+                  <td><%= movie.harga %></td>
+                  <td><%= movie.poster.length > 30 ? movie.poster.substring(0, 30) + '...' : movie.poster %></td>
+                  <td><%= movie.video.length > 30 ? movie.video.substring(0, 30) + '...' : movie.video %></td>
+                  <td><%= movie.quality %></td>
+                  <td><%= movie.releasedate %></td>
+                  <td><%= movie.duration %></td>
+                  <td><%= movie.language %></td>
+                  <td><%= movie.description.length > 30 ? movie.description.substring(0, 30) + '...' : movie.description %></td>
+                  <td><%= movie.posterls %></td>
+                  <td><%= movie.ss1 %></td>
+                  <td><%= movie.ss2 %></td>
+                  <td><%= movie.ss3 %></td>
+                  <td><%= movie.ss4 %></td>
+                  <td><%= movie.seasons %></td>
+                  <td><%= movie.trailer.length > 30 ? movie.trailer.substring(0, 30) + '...' : movie.trailer %></td>
                 <td>
                   <div class="dropdown">
                     <a
@@ -353,6 +351,7 @@
                         <form action="/updatemovie" method="POST">
                           <input type="hidden" name="id" value="<%= movie._id %>">
                           <input type="text" class="center-placeholder" id="name" name="name" placeholder="Nama Film" />
+                          <input type="text" class="center-placeholder" id="tahun" name="tahun" placeholder="Tahun" />
                           <input type="text" class="center-placeholder" id="rating" name="rating" placeholder="Rating" />
                           <input type="text" class="center-placeholder" id="genre" name="genre" placeholder="Genre" />
                           <input type="text" class="center-placeholder" id="harga" name="harga" placeholder="Harga" />
@@ -403,6 +402,7 @@
             <thead>
               <tr>
                 <th>Nama Film</th>
+                <th>Tahun</th>
                 <th>Rating</th>
                 <th>Genre</th>
                 <th>Harga</th>
@@ -426,28 +426,25 @@
             <tbody>
               <% movies3.forEach((movie, index) => { %>
               <tr>
-                <td><%= movie.name %></td>
-                <td><%= movie.rating %></td>
-                <td><%= movie.genre %></td>
-                <td><%= movie.harga %></td>
-                <td><%= movie.poster %></td>
-                <td><%= movie.video %></td>
-                <td><%= movie.quality %></td>
-                <td><%= movie.releasedate %></td>
-                <td><%= movie.duration %></td>
-                <td><%= movie.language %></td>
-                <td>
-                  <%= movie.description.length > 30 ?
-                  movie.description.substring(0, 30) + '...' : movie.description
-                  %>
-                </td>
-                <td><%= movie.posterls %></td>
-                <td><%= movie.ss1 %></td>
-                <td><%= movie.ss2 %></td>
-                <td><%= movie.ss3 %></td>
-                <td><%= movie.ss4 %></td>
-                <td><%= movie.seasons %></td>
-                <td><%= movie.trailer %></td>
+                  <td><%= movie.name %></td>
+                  <td><%= movie.tahun %></td>
+                  <td><%= movie.rating %></td>
+                  <td><%= movie.genre %></td>
+                  <td><%= movie.harga %></td>
+                  <td><%= movie.poster.length > 30 ? movie.poster.substring(0, 30) + '...' : movie.poster %></td>
+                  <td><%= movie.video.length > 30 ? movie.video.substring(0, 30) + '...' : movie.video %></td>
+                  <td><%= movie.quality %></td>
+                  <td><%= movie.releasedate %></td>
+                  <td><%= movie.duration %></td>
+                  <td><%= movie.language %></td>
+                  <td><%= movie.description.length > 30 ? movie.description.substring(0, 30) + '...' : movie.description %></td>
+                  <td><%= movie.posterls %></td>
+                  <td><%= movie.ss1 %></td>
+                  <td><%= movie.ss2 %></td>
+                  <td><%= movie.ss3 %></td>
+                  <td><%= movie.ss4 %></td>
+                  <td><%= movie.seasons %></td>
+                  <td><%= movie.trailer.length > 30 ? movie.trailer.substring(0, 30) + '...' : movie.trailer %></td>
                 <td>
                   <div class="dropdown">
                     <a
@@ -481,6 +478,7 @@
                         <form action="/updatemovie" method="POST">
                           <input type="hidden" name="id" value="<%= movie._id %>">
                           <input type="text" class="center-placeholder" id="name" name="name" placeholder="Nama Film" />
+                          <input type="text" class="center-placeholder" id="tahun" name="tahun" placeholder="Tahun" />
                           <input type="text" class="center-placeholder" id="rating" name="rating" placeholder="Rating" />
                           <input type="text" class="center-placeholder" id="genre" name="genre" placeholder="Genre" />
                           <input type="text" class="center-placeholder" id="harga" name="harga" placeholder="Harga" />
@@ -531,6 +529,7 @@
             <thead>
               <tr>
                 <th>Nama Film</th>
+                <th>Tahun</th>
                 <th>Rating</th>
                 <th>Genre</th>
                 <th>Harga</th>
@@ -553,29 +552,26 @@
             </thead>
             <tbody>
               <% movies4.forEach((movie, index) => { %>
-              <tr>
-                <td><%= movie.name %></td>
-                <td><%= movie.rating %></td>
-                <td><%= movie.genre %></td>
-                <td><%= movie.harga %></td>
-                <td><%= movie.poster %></td>
-                <td><%= movie.video %></td>
-                <td><%= movie.quality %></td>
-                <td><%= movie.releasedate %></td>
-                <td><%= movie.duration %></td>
-                <td><%= movie.language %></td>
-                <td>
-                  <%= movie.description.length > 30 ?
-                  movie.description.substring(0, 30) + '...' : movie.description
-                  %>
-                </td>
-                <td><%= movie.posterls %></td>
-                <td><%= movie.ss1 %></td>
-                <td><%= movie.ss2 %></td>
-                <td><%= movie.ss3 %></td>
-                <td><%= movie.ss4 %></td>
-                <td><%= movie.seasons %></td>
-                <td><%= movie.trailer %></td>
+                <tr>
+                  <td><%= movie.name %></td>
+                  <td><%= movie.tahun %></td>
+                  <td><%= movie.rating %></td>
+                  <td><%= movie.genre %></td>
+                  <td><%= movie.harga %></td>
+                  <td><%= movie.poster.length > 30 ? movie.poster.substring(0, 30) + '...' : movie.poster %></td>
+                  <td><%= movie.video.length > 30 ? movie.video.substring(0, 30) + '...' : movie.video %></td>
+                  <td><%= movie.quality %></td>
+                  <td><%= movie.releasedate %></td>
+                  <td><%= movie.duration %></td>
+                  <td><%= movie.language %></td>
+                  <td><%= movie.description.length > 30 ? movie.description.substring(0, 30) + '...' : movie.description %></td>
+                  <td><%= movie.posterls %></td>
+                  <td><%= movie.ss1 %></td>
+                  <td><%= movie.ss2 %></td>
+                  <td><%= movie.ss3 %></td>
+                  <td><%= movie.ss4 %></td>
+                  <td><%= movie.seasons %></td>
+                  <td><%= movie.trailer.length > 30 ? movie.trailer.substring(0, 30) + '...' : movie.trailer %></td>
                 <td>
                   <div class="dropdown">
                     <a
@@ -609,6 +605,7 @@
                         <form action="/updatemovie" method="POST">
                           <input type="hidden" name="id" value="<%= movie._id %>">
                           <input type="text" class="center-placeholder" id="name" name="name" placeholder="Nama Film" />
+                          <input type="text" class="center-placeholder" id="tahun" name="tahun" placeholder="Tahun" />
                           <input type="text" class="center-placeholder" id="rating" name="rating" placeholder="Rating" />
                           <input type="text" class="center-placeholder" id="genre" name="genre" placeholder="Genre" />
                           <input type="text" class="center-placeholder" id="harga" name="harga" placeholder="Harga" />

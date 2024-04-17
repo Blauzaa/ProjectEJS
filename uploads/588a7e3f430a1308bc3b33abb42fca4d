@@ -1,7 +1,6 @@
 [
   {
     "name": "True Beauty",
-    "tahun" : 2020,
     "rating": 7.7,
     "genre": "Romance, Drama, Coming-of-age, Comedy",
     "harga": 1.45,
@@ -22,7 +21,6 @@
   },
   {
     "name": "Vincenzo",
-    "tahun" : 2021,
     "rating": 7.8,
     "genre": "Action, Comedy, Thrilling, Drama, Mafia",
     "harga": 1.76,
@@ -43,7 +41,6 @@
   },
   {
     "name": "Weak Hero Class 1",
-    "tahun" : 2022,
     "rating": 5.7,
     "genre": "Action, Drama, Thrilling", 
     "harga": 1.54,
@@ -64,7 +61,6 @@
   },
   {
     "name": "Taxi Driver",
-    "tahun" : 2021,
     "rating": 6.9,
     "genre": "Action, Drama, Criminal, Revenge Tragedy",
     "harga": 1.111,
@@ -85,7 +81,6 @@
   },
   {
     "name": "Cheer Up",
-    "tahun" : 2022,
     "rating": 8.1,
     "genre": "Romance, Musical, Comedy, Drama",
     "harga": 1.111,
@@ -106,7 +101,6 @@
   },
   {
     "name": "At a Distance, Spring is Green",
-    "tahun" : 2021,
     "rating": 7.3,
     "genre": "Melodrama, Rom-Com, Slice of Life",
     "harga": 1.111,
@@ -127,7 +121,6 @@
   },
   {
     "name": "Save Me",
-    "tahun" : 2017,
     "rating": 9.6,
     "genre": "Thrilling, Romance, Drama, Action, Adventure",
     "harga": 1.111,
@@ -148,7 +141,6 @@
   },
   {
     "name": "The World of The Married",
-    "tahun" : 2020,
     "rating": 6.6,
     "genre": "Drama, Horror, Action, Comedy, Romance",
     "harga": 1.111,
@@ -169,7 +161,6 @@
   },
   {
     "name": "Gyeongseong Creature",
-    "tahun" : 2023,
     "rating": 7.7,
     "genre": "Drama, Horror, Action, History",
     "harga": 10.00,
@@ -190,7 +181,6 @@
   },
   {
     "name": "Itaewon Class",
-    "tahun" : 2020,
     "rating": 8.8,
     "genre": "Romance, Comedy, Drama",
     "harga": 2.222,

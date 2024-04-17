@@ -1,7 +1,6 @@
 [
   {
-    "name": "Ghost Doctor",
-    "tahun" : 2022,
+    "name": "Goblin",
     "rating": 6.7,
     "genre": "Drama Korea, Roman, Drama, Film komedi, Film fantasi, Komedi",
     "harga": 0.00,
@@ -22,8 +21,7 @@
     
   },
   {
-    "name": "Extraordinary You",
-    "tahun" : 2019,
+    "name": "Start Up",
     "rating": 7.6,
     "genre": "Roman, Drama, Film komedi, Komedi romantis, Cerita detektif, Penggalan kehidupan, Fiksi kriminal, Prosedur polisi",
     "harga": 0.00,
@@ -44,7 +42,6 @@
   },
   {
     "name": "Pinocchio",
-    "tahun" : 2014,
     "rating": 5.6,
     "genre": "Drama Korea, Drama, Roman, Film komedi, Keluarga, Melodrama, Misteri, Cerita seru",
     "harga": 0.00,
@@ -65,7 +62,6 @@
   },
   {
     "name": "Melancholia",
-    "tahun" : 2021,
     "rating": 7.9,
     "genre": "Roman, Melodrama, Drama",
     "harga": 0.00,
@@ -86,7 +82,6 @@
   },
   {
     "name": "It's Okay to Not Be Okay",
-    "tahun" : 2020,
     "rating": 8.7,
     "genre": "Roman, Drama, Film komedi, Komedi romantis, Komedi, Cerita seru, Cerita seru psikologis, Fiksi psikologis",
     "harga": 0.00,
@@ -107,7 +102,6 @@
   },
   {
     "name": "Hotel Del Luna",
-    "tahun" : 2019,
     "rating": 9.1,
     "genre": " Roman, Horor, Drama, Laga, Film komedi, Komedi romantis, Misteri, Fantasi gelap",
     "harga": 0.00,
@@ -128,7 +122,6 @@
   },
   {
     "name": "Hometown Cha-Cha-Cha",
-    "tahun" : 2021,
     "rating": 8.0,
     "genre": " Romance, Comedy Romance, Horror",
     "harga": 0.00,
@@ -149,7 +142,6 @@
   },
   {
     "name": "Doona!",
-    "tahun" : 2023,
     "rating": 7.0,
     "genre": "Romance, Comedy, Drama",
     "harga": 0.00,
@@ -169,8 +161,7 @@
     "trailer" : "./ACE.mp4"
   },
   {
-    "name": "Crash Landing on You",
-    "tahun" : 2019,
+    "name": "Crash Landing of You",
     "rating": 9.1,
     "genre": "Roman, Komedi romantis, Drama, Laga, Film komedi, Perang, Petualangan, Fiksi kriminal",
     "harga": 0.00,
@@ -191,7 +182,6 @@
   },
   {
     "name": "18 Again",
-    "tahun" : 2020,
     "rating": 8.7,
     "genre": "Roman, Drama, Horor, Laga, Film komedi, Perang, Komedi",
     "harga": 0.00,

@@ -2,7 +2,6 @@
 [
     {
       "name": "All Of Us Are Dead",
-      "tahun" : 2022,
       "rating": 8.8,
       "genre": "Action, Romance, Zombie Apocalypse",
       "harga": 7.50,
@@ -23,7 +22,6 @@
     },
     {
       "name": "Duty After School",
-      "tahun" : 2023,
       "rating": 9.2,
       "genre": "Military Sci-fi, Comedy, Coming-of-age",
       "harga": 5.00,
@@ -44,7 +42,6 @@
     },
     {
       "name": "Happiness",
-      "tahun" : 2021,
       "rating": 7.5, 
       "genre": "Horror, Romance, Thrilling, Drama, Action, Mystery",
       "harga": 8.00,
@@ -65,7 +62,6 @@
     },
     {
       "name": "Island",
-      "tahun" : 2022,
       "rating": 8.6,
       "genre": "Action, Horror, Drama, Adventure, Fantasy, Thrilling",
       "harga": 6.00,
@@ -86,7 +82,6 @@
     },
     {
       "name": "Kingdom",
-      "tahun" : 2019,
       "rating": 9.1, 
       "genre": "Horror, Action Thriller, Drama, Mystery",
       "harga": 7.50,
@@ -107,7 +102,6 @@
     },
     {
       "name": "Money Heist Korea",
-      "tahun" : 2022,
       "rating": 9.50,
       "genre": "Heist, Detective, Fiction Criminal, Police Procedure",
       "harga": 9.50,
@@ -128,7 +122,6 @@
     },
     {
       "name": "My Demon",
-      "tahun" : 2023,
       "rating": 7.3, 
       "genre": "Drama, Rom-Com, Action, Fantasy",
       "harga": 10.00,
@@ -149,7 +142,6 @@
     },
     {
       "name": "Squid Game",
-      "tahun" : 2021,
       "rating": 6.50,
       "genre": "Action, Thrilling, Drama, Comedy",
       "harga": 6.50,
@@ -170,7 +162,6 @@
     },
     {
       "name": "Sweet Home",
-      "tahun" : 2020,
       "rating": 8.6,
       "genre": "Horror, Action, Drama, Thrilling",
       "harga": 4.90,
@@ -191,7 +182,6 @@
     },
     {
       "name": "Once Upon a Small Town",
-      "tahun" : 2022,
       "rating": 7.0,
       "genre": "Rom-Com, Drama, Biography",
       "harga": 2.00,

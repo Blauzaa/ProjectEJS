@@ -1,7 +1,7 @@
 [
   {
-    "name": "Ghost Doctor",
-    "tahun" : 2022,
+    "name": "Goblin",
+    "tahun" : 2016,
     "rating": 6.7,
     "genre": "Drama Korea, Roman, Drama, Film komedi, Film fantasi, Komedi",
     "harga": 0.00,
@@ -22,8 +22,8 @@
     
   },
   {
-    "name": "Extraordinary You",
-    "tahun" : 2019,
+    "name": "Start Up",
+    "tahun" : 2020,
     "rating": 7.6,
     "genre": "Roman, Drama, Film komedi, Komedi romantis, Cerita detektif, Penggalan kehidupan, Fiksi kriminal, Prosedur polisi",
     "harga": 0.00,
