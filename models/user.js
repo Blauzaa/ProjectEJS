@@ -7,7 +7,10 @@ const userSchema = new mongoose.Schema({
   email: String,    
   password: String,
   uang: { type: Number, default: 0 }, // Set default value untuk uang
-  alrbuy: { type: [String], default: [] }
+  alrbuy: { type: [String], default: [] },
+  subs: {type: Boolean, default: false},
+  subsstartdate: {type: Date, default: null},
+  subsenddate: {type: Date, default: null}
 });
 
 // Buat model User berdasarkan schema yang telah didefinisikan

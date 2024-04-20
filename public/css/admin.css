@@ -203,7 +203,7 @@ h3 {
 
 /* Main content styles */
 main {
-  margin-top: 1.4rem;
+  margin-top: 3rem;
 }
 
 main input {
@@ -388,6 +388,118 @@ main .recent_order a {
   margin: 1rem;
 }
 
+/* header */
+header{
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 100px;
+    transition: 0.5s;
+}
+header.shadow{
+    background: #fff;
+    box-shadow: 0 0 4px rgb(14 55 54 / 15%);
+}
+header.shadow .navbar a{
+    color: #020307;
+}
+header.shadow .logo{
+    color: #020307;
+}
+
+.logo{
+    display: flex;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.1rem;
+    align-items: center;
+    column-gap: 0.5rem; 
+}
+.logo .bx{
+    font-size: 24px;
+    color: #0A1D56;
+}
+.navbar{
+    display: flex;
+    column-gap: 5rem;
+}
+.navbar li{
+    position: relative;
+}
+.navbar a{
+    font-size: 1rem;
+    font-weight: 500;
+    color: #fff;
+}
+.navbar a::after{
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #0A1D56;
+    transition: 0.4s all linear ;
+}
+.navbar a:hover::after{
+    width: 100%;
+}
+
+/* search */
+.navbar .search-container {
+    float: right;
+  }
+  
+  .navbar input[type=text] {
+    padding: 6px;
+    font-size: 1rem;
+    border: none;
+  }
+  
+  .navbar .search-container button {
+    float: right;
+    padding: 6px 10px;
+    margin-right: 16px;
+    background: #ddd;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .navbar .search-container button:hover {
+    background: #ccc;
+  }
+
+  /* search done */
+.navbar .home-active::after{
+    width: 100%;
+}
+#menu-icon{
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1000001;
+    display: none;
+}
+.btn{
+    padding: 0.7rem 1.4rem;
+    background-color: #0A1D56;
+    color: #fff;
+    font-weight: 400;
+    border-radius: 0.5rem;
+}
+.btn:hover{
+    background-color: #492E87;
+    color: #fff;
+}
+
+
+/* header done */
+
 aside a span,
 h3 {
   color: #0a1d56;
@@ -501,7 +613,41 @@ h3 {
 
 
 
+/* footer */
+.footer{
+  margin-top: 10px;
+  max-width: 968px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: space-between;
+}
+.social{
+  display: flex;
+  column-gap: 0.5rem;
+  align-items: center;
+}
+.social .bx{
+  background: #fff;
+  padding: 2px;
+  font-size: 2rem;
+  border-radius: 50%;
+  border: 4px solid rgb(2, 3, 7, 0.4);
+  color: #0A1D56;
+}
+.social .bx:hover{
+  background: #0A1D56;
+  transition: 0.2s all linear;
+  color: #fff;
+}
+/* footer done */
 
+/* copyright */
+.copyright{
+  padding: 20px;
+  text-align: center;
+  color: #fff;
+}
 
 
 /* Add Animation */

@@ -19,14 +19,13 @@
   </head>
   <body>
     <div class="container">
+      
       <aside>
-        <div class="sidebar" class="active">
-          <a href="/logout">
-            <!-- logout  -->
-            <span><i class="bx bx-log-out"></i> </span>
-            <h3>Logout</h3>
-          </a>
-        </div>
+        <% if (isLoggedIn) { %>
+          <%- include('layouts/header_logout.ejs') %> 
+      <% } else { %>
+          <%- include('layouts/header_login.ejs') %> 
+      <% } %>
       </aside>
 
       <main>
@@ -204,9 +203,6 @@
                     <div
                       class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
                     >
-                      <a class="dropdown-item" href="#"
-                        ><i class="dw dw-eye"></i> View</a
-                      >
                       <a class="open-modal" data-modal-id="<%= movie._id %>" class="dropdown-item" href="#"
                         ><i class="dw dw-edit2"></i> Edit</a
                       >
@@ -331,9 +327,6 @@
                     <div
                       class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
                     >
-                    <a class="dropdown-item" href="#"
-                    ><i class="dw dw-eye"></i> View</a
-                  >
                   <a class="open-modal" data-modal-id="<%= movie._id %>" class="dropdown-item" href="#"
                     ><i class="dw dw-edit2"></i> Edit</a
                   >
@@ -458,9 +451,6 @@
                     <div
                       class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
                     >
-                    <a class="dropdown-item" href="#"
-                    ><i class="dw dw-eye"></i> View</a
-                  >
                   <a class="open-modal" data-modal-id="<%= movie._id %>" class="dropdown-item" href="#"
                     ><i class="dw dw-edit2"></i> Edit</a
                   >
@@ -585,9 +575,6 @@
                     <div
                       class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
                     >
-                    <a class="dropdown-item" href="#"
-                    ><i class="dw dw-eye"></i> View</a
-                  >
                   <a class="open-modal" data-modal-id="<%= movie._id %>" class="dropdown-item" href="#"
                     ><i class="dw dw-edit2"></i> Edit</a
                   >
@@ -651,6 +638,7 @@
         </div>
       </main>
     </div>
+    <%- include('layouts/footer.ejs') %> 
     <script src="js/admin.js"></script>
   </body>
 </html>

@@ -14,6 +14,7 @@ const movieController = require('./controllers/movieController');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const websiteController = require('./controllers/websiteController');
+const checkSubscriptionStatus  = require('./controllers/subsController.js');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -88,6 +89,7 @@ app.get('/logout', (req, res) => {
 // Rute untuk halaman utama
 app.get('/', async (req, res) => {
   try {
+    
     const movies = await getMovies();
     const comingSoon = await getComingSoonMovies();
     const freeMovies = await getFreeMovies();
@@ -95,12 +97,14 @@ app.get('/', async (req, res) => {
     const isLoggedIn = !!req.user; // Check if user is logged in
     const user = req.user;
     const moviesBought = user ? user.alrbuy : [];
-    res.render('index', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn, moviesBought }); // Pass movie data to the template
+    const userSubs = user ? user.subs : false; // Check if user has subscription
+    res.render('index', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn, moviesBought, userSubs }); // Pass movie data to the template
   } catch (error) {
     console.error(error);
     res.render('error'); // Handle errors appropriately
   }
 });
+
 // Rute untuk menampilkan detail film di halaman watch
 app.get('/watch', async (req, res) => {
   try {
@@ -192,8 +196,6 @@ app.get('/watch', async (req, res) => {
 });
 
 
-
-// Rute untuk menangani checkout
 // Rute untuk menangani checkout
 app.post('/checkout', async (req, res) => {
   try {
@@ -246,6 +248,78 @@ app.post('/checkout', async (req, res) => {
 });
 
 
+app.get('/paymentsubs', async (req, res) => {
+  try {
+      // Pastikan pengguna sudah login dan req.user tidak null
+      if (req.isAuthenticated()) {
+          // Dapatkan informasi pengguna dari objek req.user yang sudah di-deserialize
+          const user = req.user;
+
+
+          // Render halaman pembayaran dengan menyertakan data uang
+          res.render('paymentsubs', { usersubs: user.subs, isLoggedIn: true, userMoney: user.uang });
+      } else {
+          // Jika pengguna belum login, redirect ke halaman login
+          res.redirect('/login');
+      }
+  } catch (error) {
+      console.error(error);
+      res.render('error'); // Handle errors appropriately
+  }
+});
+
+  // Rute untuk menangani checkout
+  app.post('/checkoutsubs', async (req, res) => {
+    try {
+        const user = req.user;
+
+        // Periksa apakah pengguna memiliki cukup uang untuk membeli subs
+        if (user.uang < 50) {
+            return res.status(403).send('Insufficient funds');
+        }
+
+        // Periksa apakah pengguna sudah pernah membeli subs
+        if (user.subs) {
+            // Jika sudah, langsung arahkan ke halaman /
+            res.redirect('/');
+            return;
+        }
+
+        // Kurangi uang pengguna dengan harga subs
+        user.uang -= 50;
+
+        // ubah user.subs menjadi true
+        user.subs = true;
+
+        // Set tanggal checkout ke subsstartdate
+        user.subsstartdate = new Date();
+
+        // Hitung tanggal subsenddate satu bulan ke depan
+        const oneMonthLater = new Date();
+        oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
+        user.subsenddate = oneMonthLater;
+
+        // Simpan perubahan pada pengguna ke dalam database
+        await user.save();
+
+        // Cari akun admin yang terkait
+        const adminUser = await User.findOne({ email: '111@admin.com' });
+
+        // Tambahkan jumlah uang yang sudah dikurangi dari pengguna ke saldo uang admin
+        adminUser.uang += 50;
+
+        // Simpan perubahan saldo uang admin ke dalam database
+        await adminUser.save();
+
+        // Redirect pengguna ke halaman watch setelah pembayaran berhasil
+        res.redirect('/');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
   app.get('/admin', async (req, res) => {
     try {
       const movies1 = await Movie.find();
@@ -255,12 +329,14 @@ app.post('/checkout', async (req, res) => {
       const totalMovies = await websiteController.getTotalMovies();
       const totalUsers = await websiteController.getTotalUsers();
       const totalUang = await websiteController.getAdminUang();
-      res.render('admin', { movies1, movies2, movies3, movies4, totalMovies, totalUsers, totalUang }); // Pass movie data to the template
+      const isLoggedIn = !!req.user;
+      res.render('admin', { movies1, movies2, movies3, movies4, totalMovies, totalUsers, totalUang, isLoggedIn }); // Pass movie data to the template
     } catch (error) {
       console.error(error);
       res.render('error'); // Handle errors appropriately
     }
   });
+
 
 // Pindahkan rute insertmovie ke movieController
 app.post('/insertmovie', movieController.insertMovie);
@@ -300,7 +376,9 @@ app.get('/getmovie/:id', async (req, res) => {
 });
 
 
-
+// check subs status
+checkSubscriptionStatus();
+setInterval(checkSubscriptionStatus, 24 * 60 * 60 * 1000);
 
 
 mongoose.connect(mongoURI, {})
@@ -345,8 +423,11 @@ app.get('/admin', (req, res) => {
 app.get('/payment', (req, res) => {
     res.render('payment');
 });
+app.get('/paymentsubs', (req, res) => {
+  res.render('paymentsubs');
+});
 
-    // Mulai server
-    app.listen(port, () => {
-      console.log(`Server running at http://localhost:${port}`);
-    });
+// Mulai server
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});

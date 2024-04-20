@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Twice</title>
-    
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -18,6 +17,35 @@
         <%- include('layouts/header_login.ejs') %> 
     <% } %>
  
+<!-- iklan -->
+  
+<% if (userSubs) { %>
+    <div hidden>
+        <details >
+        <summary>Subscribe <i class='bx bx-shopping-bag' style='color:#ffffff'></i></summary>
+        <div >
+            <p>Tersedia sekarang: berlangganan layanan streaming Twcie hanya dengan $50 per bulan! Nikmati akses tak terbatas ke berbagai koleksi film dan acara TV favorit Anda. Dengan berlangganan, Anda dapat menonton semua film yang ada kapan pun dan di mana pun Anda inginkan tanpa perlu membayar lagi. Jangan lewatkan kesempatan ini untuk menikmati hiburan tanpa batas dengan biaya yang terjangkau. Segera berlangganan sekarang dan mulailah menikmati serangkaian konten berkualitas!</p>
+            <a class="subbtn" href="/paymentsubs"> Buy Now</a>
+        </div>
+    </details>
+    </div>
+    
+<% } else { %>
+    <div>
+        <details>
+        <summary>Subscribe <i class='bx bx-shopping-bag' style='color:#ffffff'></i></summary>
+        <div>
+            <p>Tersedia sekarang: berlangganan layanan streaming Twcie hanya dengan $50 per bulan! Nikmati akses tak terbatas ke berbagai koleksi film dan acara TV favorit Anda. Dengan berlangganan, Anda dapat menonton semua film yang ada kapan pun dan di mana pun Anda inginkan tanpa perlu membayar lagi. Jangan lewatkan kesempatan ini untuk menikmati hiburan tanpa batas dengan biaya yang terjangkau. Segera berlangganan sekarang dan mulailah menikmati serangkaian konten berkualitas!</p>
+            <a class="subbtn" href="/paymentsubs"> Buy Now</a>
+        </div>
+    </details>
+    </div>
+
+<% } %>
+
+    
+<!-- iklan done -->
+   
 
     <section class="home swiper" id="home">
         <div class="swiper-wrapper">
@@ -84,24 +112,24 @@
             
             <% for (const movie of movies) { %>
                 <div class="box">
-                  <div class="box-img">
-                    <% if (isLoggedIn && moviesBought.includes(movie._id)) { %>
-                      <a href="/watch?movieId=<%= movie._id %>"><img src="<%= movie.poster %>" alt="<%= movie.name %>"></a>
-                    <% } else { %>
-                      <a href="/buy?movieId=<%= movie._id %>"><img src="<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                    <div class="box-img">
+                        <% if (isLoggedIn && (moviesBought.includes(movie._id) || userSubs)) { %>
+                            <a href="/watch?movieId=<%= movie._id %>"><img src="<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                        <% } else { %>
+                            <a href="/buy?movieId=<%= movie._id %>"><img src="<%= movie.poster %>" alt="<%= movie.name %>"></a>
+                        <% } %>
+                    </div>
+                    <h3><%= movie.name %></h3>
+                    <span><%= movie.rating %> | <%= movie.genre %></span>
+                    <% if (movie.harga > 0) { %>
+                        <% if (isLoggedIn && (moviesBought.includes(movie._id) || userSubs)) { %>
+                            <a href="/watch?movieId=<%= movie._id %>"></a>
+                        <% } else { %>
+                            <h4>$<%= movie.harga %></h4>
+                        <% } %>
                     <% } %>
-                  </div>
-                  <h3><%= movie.name %></h3>
-                  <span><%= movie.rating %> | <%= movie.genre %></span>
-                  <% if (movie.harga > 0) { %>
-                    <% if (isLoggedIn && moviesBought.includes(movie._id)) { %>
-                      <a href="/watch?movieId=<%= movie._id %>"></a>
-                    <% } else { %>
-                      <h4>$<%= movie.harga %></h4>
-                    <% } %>
-                  <% } %>
                 </div>
-              <% } %>
+            <% } %>
               
 <!-- 
                 <div class="box">

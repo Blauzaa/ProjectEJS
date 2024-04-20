@@ -47,7 +47,10 @@ async function initialize(passport, getUserByEmail, getUserById) {
           email: '111@admin.com',
           password: hashedPassword,
           uang: 0,
-          alrbuy: []
+          alrbuy: [],
+          subs: false,
+          subsstartdate: null,
+          subsenddate: null,
         });
         await newUser.save();
         console.log('Admin Account added successfully.');

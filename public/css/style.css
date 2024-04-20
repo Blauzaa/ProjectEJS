@@ -292,6 +292,133 @@ header.shadow .logo{
 /* free done */
 
 
+/* iklan */
+details {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    margin-top: 2rem;
+    color: #6b7280;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+details div {
+    background-color: #1e1e27;
+    box-shadow: 0 5px 10px rgba(#000, 0.15);
+    padding: 1.25rem;
+    border-radius: 8px;
+    position: absolute;
+    max-height: calc(100vh - 100px);
+    width: 400px;
+    max-width: calc(100vw - 2rem);
+    bottom: calc(100% + 1rem);
+    right: 0;
+    overflow: auto;
+    transform-origin: 100% 100%;
+    color: #95a3b9;
+    z-index: 1000;
+}
+
+details div::-webkit-scrollbar {
+    width: 15px;
+    background-color: #1e1e27;
+}
+
+details div::-webkit-scrollbar-thumb {
+    width: 5px;
+    border-radius: 99em;
+    background-color: #95a3b9;
+    border: 5px solid #1e1e27;
+}
+
+details div > * + * {
+    margin-top: 0.75em;
+}
+
+summary {
+    display: inline-flex;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    padding: 0.75em 1em .75em 1.21em;
+    border-radius: 99em;
+    color: #fff;
+    background-color: #0A1D56;
+    box-shadow: 0 5px 15px rgba(#000, 0.1);
+    list-style: none;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.15s ease;
+    position: relative;
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+summary:hover,
+summary:focus {
+    background-color: mix(#000, #0A1D56, 20%);
+}
+
+.subbtn {
+    align-items: center;
+    appearance: none;
+    background-color: #0A1D56;
+    background-size: calc(100% + 20px) calc(100% + 20px);
+    border-radius: 100px;
+    border-width: 0;
+    box-shadow: none;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: CircularStd,sans-serif;
+    font-size: 1rem;
+    height: auto;
+    justify-content: center;
+    line-height: 1.5;
+    padding: 6px 20px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color .2s,background-position .2s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+  
+  .subbtn:active,
+  .subbtn:focus {
+    outline: none;
+  }
+  
+  .subbtn:hover {
+    background-position: -20px -20px;
+  }
+  
+  .subbtn:focus:not(:active) {
+    box-shadow: rgba(40, 170, 255, 0.25) 0 0 0 .125em;
+  }
+
+@keyframes scale {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* iklan done */
+
+
 /* footer */
 .footer{
     max-width: 968px;
