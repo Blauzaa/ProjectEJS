@@ -76,7 +76,11 @@
                 </a>
                 <div class="play-movie">
                     <video id="m-video" controls>
-                        <source src="video/<%= selectedMovie.video %>" type="video/mp4">
+                        <% if (season && episode && selectedMovie.seasons[season - 1] >= episode) { %>
+                            <source src="video/S<%= season %>E<%= episode %>_<%= selectedMovie.name %>.mp4" type="video/mp4">
+                        <% } else { %>
+                            <source src="video/<%= selectedMovie.video %>" type="video/mp4">
+                        <% } %>
                     </video>
                 </div>
             </div>
@@ -99,19 +103,19 @@
             <img src="img/<%= selectedMovie.ss4 %>">
         </div>
     </section>
-
     <% for(let i = 0; i < selectedMovie.seasons.length; i++) { %>
         <section class="list-episode">
             <strong id="seasonButton<%= i + 1 %>" onclick="toggleDropdown('episodeList<%= i + 1 %>')">Season <%= i + 1 %></strong>
             <div class="list">
                 <ul class="dropdown-content" id="episodeList<%= i + 1 %>">
                     <% for(let j = 1; j <= selectedMovie.seasons[i]; j++) { %>
-                        <li><a href="#"><%= selectedMovie.name %> <%= j %></a></li>
+                        <li><a href="/watch?movieId=<%= selectedMovie._id %>&season=<%= i + 1 %>&episode=<%= j %>"><%= selectedMovie.name %> Season <%= i + 1 %> Episode <%= j %></a></li>
                     <% } %>
                 </ul>
             </div>
         </section>
     <% } %>
+    
     
 
     

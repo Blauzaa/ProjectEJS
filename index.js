@@ -107,9 +107,12 @@ app.get('/', async (req, res) => {
 });
 
 // Rute untuk menampilkan detail film di halaman watch
+// Rute untuk menampilkan detail film di halaman watch
 app.get('/watch', async (req, res) => {
   try {
     const movieId = req.query.movieId; // Mengambil ID film dari parameter query
+    const season = req.query.season; // Mengambil nilai season dari parameter query
+    const episode = req.query.episode; // Mengambil nilai episode dari parameter query
     
     // Gunakan ID untuk mencari data film dari keempat koleksi
     const selectedMovie = await Promise.all([
@@ -129,12 +132,13 @@ app.get('/watch', async (req, res) => {
     }
     
     const isLoggedIn = !!req.user; // Check if user is logged in
-    res.render('watch', { selectedMovie: foundMovie, isLoggedIn }); // Pass movie data to the template
+    res.render('watch', { selectedMovie: foundMovie, isLoggedIn, season, episode }); // Pass movie data to the template
   } catch (error) {
     console.error(error);
     res.render('error'); // Handle errors appropriately
   }
 });
+
 
 // Rute untuk menampilkan detail film di halaman comingsoon
   app.get('/comingsoon', async (req, res) => {
@@ -351,7 +355,7 @@ app.get('/admin', async (req, res) => {
       res.render('admin', { movies1, movies2, movies3, movies4, totalMovies, totalUsers, totalUang, isLoggedIn });
     } else {
       // Jika pengguna tidak terautentikasi atau bukan admin, redirect atau tampilkan pesan akses ditolak
-      res.redirect('/');
+      res.redirect('/login');
     }
   } catch (error) {
     console.error(error);
