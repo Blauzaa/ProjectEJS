@@ -56,7 +56,7 @@ async function getComingSoonMovies() { // Mendapatkan semua film yang akan datan
 // Fungsi untuk mendapatkan trailer dari TMDB API berdasarkan judul drama Korea
 async function getMovieDetailsFromOMDb(title, year) { // Menambahkan parameter 'year'
   try {
-    const apiKey = 'c028c167';
+    const apiKey = process.env.OMDB_API_KEY; // Ambil kunci API OMDb dari variabel lingkungan
 
     // Buat URL pencarian OMDb berdasarkan judul film dan tahun
     const searchUrl = `http://www.omdbapi.com/?apikey=${apiKey}&t=${encodeURIComponent(title)}&y=${year}`;

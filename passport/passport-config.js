@@ -78,5 +78,22 @@ async function initialize(passport, getUserByEmail, getUserById) {
     }
   });
 }
+function ensureAuthenticated(req, res, next) {
+  // Periksa apakah pengguna sudah login
+  if (req.isAuthenticated()) {
+    // Periksa apakah pengguna adalah admin
+    if (req.user.email === '111@admin.com') {
+      // Jika pengguna adalah admin, lanjutkan ke rute berikutnya
+      return next();
+    } else {
+      // Jika pengguna bukan admin, alihkan ke halaman tertentu
+      return res.redirect('/'); // Ganti '/' dengan halaman yang sesuai
+    }
+  } else {
+    // Jika pengguna belum login, lanjutkan ke rute berikutnya (halaman login)
+    return next();
+  }
+}
 
-module.exports = initialize;
+
+module.exports = {initialize, ensureAuthenticated};

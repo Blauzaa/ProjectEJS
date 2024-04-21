@@ -57,7 +57,11 @@
                     <div class="home-text">
                         <span><%= movie.genre %></span>
                         <h1><%= movie.name %></h1>
-                        <a href="/watch?movieId=<%= movie._id %>" class="btn"> Watch now</a>
+                        <% if (isLoggedIn && (moviesBought.includes(movie._id) || userSubs)) { %>
+                            <a href="/watch?movieId=<%= movie._id %>" class="btn"> Watch now</a>
+                        <% } else { %>
+                            <a href="/buy?movieId=<%= movie._id %>" class="btn"> Buy now</a>
+                        <% } %>
                         <a href="<%= movie.trailer %>" class="play">
                             <i class='bx bx-play' ></i>
                         </a>

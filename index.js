@@ -3,7 +3,7 @@ const app = express();
 const flash = require("express-flash");
 const session = require("express-session");
 const passport = require("passport");
-const initializePassport = require("./passport/passport-config");
+const {initialize, ensureAuthenticated } = require("./passport/passport-config");
 const mongoose = require('mongoose');
 const fs = require('fs');
 const User = require("./models/user");
@@ -15,6 +15,7 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const websiteController = require('./controllers/websiteController');
 const checkSubscriptionStatus  = require('./controllers/subsController.js');
+const jwt = require('jsonwebtoken');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -26,10 +27,10 @@ if (process.env.NODE_ENV !== "production") {
 
   
 // Define the port for the server
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 // Define the MongoDB URI
-const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/Database';
+const mongoURI = process.env.MONGO_URI;
 
 // Export the Express app and MongoDB URI for testing purposes
 module.exports = {
@@ -49,7 +50,7 @@ app.use(session({ // Middleware untuk manajemen session
 app.use(passport.initialize()); // Middleware untuk menginisialisasi Passport.js
 app.use(passport.session()); // Middleware untuk menggunakan session dengan Passport.js
 
-initializePassport( // Menginisialisasi Passport.js
+initialize( // Menginisialisasi Passport.js
   passport, // Objek Passport.js
   async (email) => await User.findOne({ email }), // Fungsi untuk mendapatkan pengguna berdasarkan email
   async (id) => await User.findById(id) // Fungsi untuk mendapatkan pengguna berdasarkan ID
@@ -153,9 +154,24 @@ app.get('/watch', async (req, res) => {
     try {
       const movieId = req.query.movieId; // Mengambil ID film dari parameter query
       // Gunakan ID untuk mengambil data film dari database
-      const selectedMovie = await Movie.findById(movieId);
+         // Gunakan ID untuk mencari data film dari keempat koleksi
+    const selectedMovie = await Promise.all([
+      Movie.findById(movieId),
+      Movie2.findById(movieId),
+      Movie3.findById(movieId),
+      Movie4.findById(movieId)
+    ]);
+
+    // Loop through the result to find the movie from the first collection where it's found
+    let foundMovie;
+    for (const movie of selectedMovie) {
+      if (movie !== null) {
+        foundMovie = movie;
+        break;
+      }
+    }
       const isLoggedIn = !!req.user; // Check if user is logged in
-      res.render('buy', { selectedMovie, isLoggedIn }); // Pass movie data to the template
+      res.render('buy', { selectedMovie: foundMovie, isLoggedIn }); // Pass movie data to the template
     } catch (error) {
       console.error(error);
       res.render('error'); // Handle errors appropriately
@@ -320,8 +336,10 @@ app.get('/paymentsubs', async (req, res) => {
 });
 
 
-  app.get('/admin', async (req, res) => {
-    try {
+app.get('/admin', async (req, res) => {
+  try {
+    if (req.isAuthenticated() && req.user.email === '111@admin.com') {
+      // Jika pengguna terautentikasi dan alamat emailnya adalah admin
       const movies1 = await Movie.find();
       const movies2 = await Movie2.find();
       const movies3 = await Movie3.find();
@@ -329,13 +347,18 @@ app.get('/paymentsubs', async (req, res) => {
       const totalMovies = await websiteController.getTotalMovies();
       const totalUsers = await websiteController.getTotalUsers();
       const totalUang = await websiteController.getAdminUang();
-      const isLoggedIn = !!req.user;
-      res.render('admin', { movies1, movies2, movies3, movies4, totalMovies, totalUsers, totalUang, isLoggedIn }); // Pass movie data to the template
-    } catch (error) {
-      console.error(error);
-      res.render('error'); // Handle errors appropriately
+      const isLoggedIn = true; // Set isLoggedIn menjadi true karena pengguna terautentikasi
+      res.render('admin', { movies1, movies2, movies3, movies4, totalMovies, totalUsers, totalUang, isLoggedIn });
+    } else {
+      // Jika pengguna tidak terautentikasi atau bukan admin, redirect atau tampilkan pesan akses ditolak
+      res.redirect('/');
     }
-  });
+  } catch (error) {
+    console.error(error);
+    res.render('error'); // Handle errors appropriately
+  }
+});
+
 
 
 // Pindahkan rute insertmovie ke movieController
@@ -404,11 +427,11 @@ app.get('/comingsoon', (req, res) => {
     res.render('comingsoon');
     });
 
-app.get('/login', (req, res) => {
+app.get('/login', ensureAuthenticated, (req, res) => {
     res.render('login');
     });
 
-app.get('/signin', (req, res) => {
+app.get('/signin' , ensureAuthenticated, (req, res) => {
     res.render('signin');
     });
 app.get('/logout', (req, res) => {
@@ -417,7 +440,7 @@ app.get('/logout', (req, res) => {
 app.get('/watch', (req, res) => {
     res.render('watch');
     });
-app.get('/admin', (req, res) => {
+app.get('/admin',  ensureAuthenticated, (req, res) => {
     res.render('admin', { messages: req.flash() });
 });
 app.get('/payment', (req, res) => {
