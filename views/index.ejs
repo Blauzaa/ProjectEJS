@@ -24,7 +24,7 @@
         <details >
         <summary>Subscribe <i class='bx bx-shopping-bag' style='color:#ffffff'></i></summary>
         <div >
-            <p>Tersedia sekarang: berlangganan layanan streaming Twcie hanya dengan $50 per bulan! Nikmati akses tak terbatas ke berbagai koleksi film dan acara TV favorit Anda. Dengan berlangganan, Anda dapat menonton semua film yang ada kapan pun dan di mana pun Anda inginkan tanpa perlu membayar lagi. Jangan lewatkan kesempatan ini untuk menikmati hiburan tanpa batas dengan biaya yang terjangkau. Segera berlangganan sekarang dan mulailah menikmati serangkaian konten berkualitas!</p>
+            <p>Embark on a captivating journey through Korean entertainment with our premier streaming website. Dive into heart-wrenching romance, pulse-pounding action, and rich culture. Subscribe now for endless drama at your fingertips.</p>
             <a class="subbtn" href="/paymentsubs"> Buy Now</a>
         </div>
     </details>
@@ -35,7 +35,7 @@
         <details>
         <summary>Subscribe <i class='bx bx-shopping-bag' style='color:#ffffff'></i></summary>
         <div>
-            <p>Tersedia sekarang: berlangganan layanan streaming Twcie hanya dengan $50 per bulan! Nikmati akses tak terbatas ke berbagai koleksi film dan acara TV favorit Anda. Dengan berlangganan, Anda dapat menonton semua film yang ada kapan pun dan di mana pun Anda inginkan tanpa perlu membayar lagi. Jangan lewatkan kesempatan ini untuk menikmati hiburan tanpa batas dengan biaya yang terjangkau. Segera berlangganan sekarang dan mulailah menikmati serangkaian konten berkualitas!</p>
+            <p>Embark on a captivating journey through Korean entertainment with our premier streaming website. Dive into heart-wrenching romance, pulse-pounding action, and rich culture. Subscribe now for endless drama at your fingertips.</p>
             <a class="subbtn" href="/paymentsubs"> Buy Now</a>
         </div>
     </details>
@@ -52,12 +52,11 @@
 
             <% for (const movie of mainMovies) { %>
                 <div class="swiper-slide container">
-                
                     <img src="img/<%= movie.posterls %>" alt="<%= movie.name %>">
                     <div class="home-text">
                         <span><%= movie.genre %></span>
                         <h1><%= movie.name %></h1>
-                        <% if (isLoggedIn && (moviesBought.includes(movie._id) || userSubs)) { %>
+                        <% if (isLoggedIn && (moviesBought.includes(movie._id.toString()) || userSubs)) { %>
                             <a href="/watch?movieId=<%= movie._id %>" class="btn"> Watch now</a>
                         <% } else { %>
                             <a href="/buy?movieId=<%= movie._id %>" class="btn"> Buy now</a>
@@ -68,44 +67,6 @@
                     </div>
                 </div>
             <% } %>
-            <!-- <div class="swiper-slide container">
-                
-                <img src="img/Youth Of May.jpg">
-                <div class="home-text">
-                    <span> Romance, Drama, History, Melodrama</span>
-                    <h1>Youth of May </h1>
-                    <a href="" class="btn"> Watch now</a>
-                    <a href="" class="play">
-                        <i class='bx bx-play' ></i>
-                    </a>
-                </div>
-            </div>
-
-
-            <div class="swiper-slide container">
-                <img src="img/MyLoveFromTheStar.jpg">
-                <div class="home-text">
-                    <span> Drama, Romance, Comedy</span>
-                    <h1>My Love <br>From The Star </h1>
-                    <a href="" class="btn"> Watch now</a>
-                    <a href="" class="play">
-                        <i class='bx bx-play' ></i>
-                    </a>
-                </div>
-            </div>
-
-
-            <div class="swiper-slide container">
-                <img src="img/ls thegodofhighschool.webp">
-                <div class="home-text">
-                    <span> Action, Manhwa, anime</span>
-                    <h1>THE GOD <br>OF HIGHSCHOOL </h1>
-                    <a href="" class="btn"> Watch now</a>
-                    <a href="" class="play">
-                        <i class='bx bx-play' ></i>
-                    </a>
-                </div>
-            </div> -->
         </div>
         <div class="swiper-pagination"></div>
     </section>
@@ -117,7 +78,7 @@
             <% for (const movie of movies) { %>
                 <div class="box">
                     <div class="box-img">
-                        <% if (isLoggedIn && (moviesBought.includes(movie._id) || userSubs)) { %>
+                        <% if (isLoggedIn && (moviesBought.includes(movie._id.toString()) || userSubs)) { %>
                             <a href="/watch?movieId=<%= movie._id %>"><img src="<%= movie.poster %>" alt="<%= movie.name %>"></a>
                         <% } else { %>
                             <a href="/buy?movieId=<%= movie._id %>"><img src="<%= movie.poster %>" alt="<%= movie.name %>"></a>
@@ -126,7 +87,7 @@
                     <h3><%= movie.name %></h3>
                     <span><%= movie.rating %> | <%= movie.genre %></span>
                     <% if (movie.harga > 0) { %>
-                        <% if (isLoggedIn && (moviesBought.includes(movie._id) || userSubs)) { %>
+                        <% if (isLoggedIn && (moviesBought.includes(movie._id.toString()) || userSubs)) { %>
                             <a href="/watch?movieId=<%= movie._id %>"></a>
                         <% } else { %>
                             <h4>$<%= movie.harga %></h4>
@@ -134,109 +95,6 @@
                     <% } %>
                 </div>
             <% } %>
-              
-<!-- 
-                <div class="box">
-                    <div class="box-img">
-                        <a href="/buy"><img src="img/allofusaredead.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>All Of Us Are Dead</h3>
-                    <span>1 Season | Action, Romance, Zombie Apocalypse </span>
-                    <h4>$7.50</h4>
-                </div>
-    
-                <div class="box">
-                    <div class="box-img">
-                        <a href="/buy"><img src="img/dutyafterschool.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Duty After School</h3>
-                    <span>1 Season | Military Sci-fi, Comedy, Coming-of-age </span>
-                    <h4>$5.00</h4>
-                </div>
-    
-                <div class="box">
-                    <div class="box-img">
-                        <a href="/buy"><img src="img/happiness.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Happiness</h3>
-                    <span>1 Season | Horror, Romance, Thrilling, Drama, Action, Mystery </span>
-                    <h4>$8.00</h4>
-                </div>
-    
-                <div class="box">
-                    <div class="box-img">
-                        <a href="/buy"><img src="img/island.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Island</h3>
-                    <span>1 Season| Action, Horror, Drama, Adventure, Fantasy, Thrilling </span>
-                    <h4>$6.00</h4>
-                </div>
-    
-                <div class="box">
-                    <div class="box-img">
-                        <a href="/buy"><img src="img/kingdom.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Kingdom</h3>
-                    <span>2 Seasons | Horror, Action Thriller, Drama, Mystrery </span>
-                    <h4>$7.50</h4>
-                </div>
-    
-                <div class="box">
-                    <div class="box-img">
-                        <a href="/buy"><img src="img/moneyheistkorea.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Money Heist Korea</h3>
-                    <span>1 Season | Heist, Detective, Fiction Criminal, Police Procedure </span>
-                    <h4>$9.50</h4>
-                </div>
-    
-                <div class="box">
-                    <div class="box-img">
-                        <a href="/buy"><img src="img/mydemon.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>My Demon</h3>
-                    <span>1 Season | Drama, Rom-Com , Action, Fantasy</span>
-                    <h4>$10.00</h4>
-                </div>
-    
-                <div class="box">
-                    <div class="box-img">
-                        <a href="/buy"><img src="img/squidgame.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Squid Game</h3>
-                    <span>1 Season | Action, Thrilling, Drama, Comedy </span>
-                    <h4>$6.50</h4>
-                </div>
-    
-                <div class="box">
-                    <div class="box-img">
-                        <a href="/buy"><img src="img/sweethome.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Sweet Home</h3>
-                    <span>2 Seasons | Horror, Action, Drama, Thrilling </span>
-                    <h4>$4.90</h4>
-                </div>
-    
-                <div class="box">
-                    <div class="box-img">
-                        <a href="/buy"><img src="img/OnceUponASmallTown.jpeg" alt=""></a>
-                        
-                    </div>
-                    <h3>Once Upon a Small Town</h3>
-                    <span>1 Season | Rom-Com, Drama, Biography </span>
-                    <h4>$2.00</h4>
-                </div> -->
-
-            
         </div>
     </section>
 
@@ -256,107 +114,6 @@
                       <% } %>
                     </div>
                   <% } %>
-
-
-                <!-- <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/comingsoon"><img src="img/truebeauty.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>True Beauty</h3>
-                    <span>1 Season | Romance, Drama, Coming-of-age, Comedy </span>
-                    <h4>$1.45</h4>
-                </div> 
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/comingsoon"><img src="img/vincenzo.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Vincenzo</h3>
-                    <span>1 Season |Action, Comedy, Thrilling, Drama, Mafia </span>
-                    <h4>$1.76</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/comingsoon"><img src="img/weakhero.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Weak Hero</h3>
-                    <span>1 Season | Action, Drama, Thrilling </span>
-                    <h4>$1.54</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/comingsoon"><img src="img/Taxi Driver.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Taxi Driver</h3>
-                    <span>2 Seasons |  Action, Drama, Criminal, Revenge Tragedy </span>
-                    <h4>$1.111</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/comingsoon"><img src="img/CheerUp.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Cheer Up</h3>
-                    <span>1 Season | Romance, Musical, Comedy, Drama,  </span>
-                    <h4>$1.111</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/comingsoon"><img src="img/At a Distance, Spring is Green.jpeg" alt=""></a>
-                        
-                    </div>
-                    <h3>At a Distance, Spring is Green</h3>
-                    <span>1 Season | Melodrama, Rom-Com, Slice of Life </span>
-                    <h4>$1.111</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/comingsoon"><img src="img/Save Me.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Save Me</h3>
-                    <span>1 Season | Thrilling, Romance, Drama, Action, Adventure </span>
-                    <h4>$1.111</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/comingsoon"><img src="img/The World of The Married.jpeg" alt=""></a>
-                        
-                    </div>
-                    <h3>The World of The Married</h3>
-                    <span>1 Season |  Drama, Horror, Action, Comedy, Romance </span>
-                    <h4>$1.111</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/comingsoon"><img src="img/Gyeongseong Creature.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Gyeongseong Creature</h3>
-                    <span>1 Season |  Drama, Horror, Action, History </span>
-                    <h4>$10.00</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/comingsoon"><img src="img/itaewon class.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Itaewon Class</h3>
-                    <span>1 Season| Romance, Comedy, Drama </span>
-                    <h4>$2.222</h4>
-                </div>  -->
             </div>
             
     </section>
@@ -378,106 +135,6 @@
                       <h4>$<%= movie.harga %></h4>
                     </div>
                   <% } %>
-
-                <!-- <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/watch"><img src="img/Goblin.jpeg" alt=""></a>
-                        
-                    </div>
-                    <h3>Goblin</h3>
-                    <span>1 Season | Romance </span>
-                    <h4>Free</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/watch"><img src="img/Start Up.jpeg" alt=""></a>
-                        
-                    </div>
-                    <h3>Start Up</h3>
-                    <span>1 Season | Romance </span>
-                    <h4>Free</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/watch"><img src="img/Pinocchio.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Pinocchio</h3>
-                    <span>1 Season | Romance </span>
-                    <h4>Free</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/watch"><img src="img/Melancholia.jpeg" alt=""></a>
-                        
-                    </div>
-                    <h3>Melancholia</h3>
-                    <span>1 Season | Romance </span>
-                    <h4>Free</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/watch"><img src="img/It's Okay to Not Be Okay.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>It's Okay to Not Be Okay</h3>
-                    <span>1 Season | Romance </span>
-                    <h4>Free</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/watch"><img src="img/HotelDelLuna.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Hotel Del Luna</h3>
-                    <span>1 Season | Romance </span>
-                    <h4>Free</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/watch"><img src="img/Hometown Cha Cha.jpeg" alt=""></a>
-                       
-                    </div>
-                    <h3>Hometown Cha-Cha-Cha</h3>
-                    <span>1 Season | Romance </span>
-                    <h4>Free</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/watch"><img src="img/Doona.jpeg" alt=""></a>
-                        
-                    </div>
-                    <h3>Doona!</h3>
-                    <span>1 Season | Romance </span>
-                    <h4>Free</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/watch"><img src="img/CLOY.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>Crash Landing of You</h3>
-                    <span>1 Season | Romance </span>
-                    <h4>Free</h4>
-                </div>
-    
-                <div class="swiper-slide box">
-                    <div class="box-img">
-                        <a href="/watch"><img src="img/18 Again.jpg" alt=""></a>
-                        
-                    </div>
-                    <h3>18 Again</h3>
-                    <span>1 Season | Romance, Slice of Life </span>
-                    <h4>Free</h4>
-                </div> -->
             </div>
             
     </section>

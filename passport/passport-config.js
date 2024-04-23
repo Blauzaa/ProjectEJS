@@ -1,6 +1,16 @@
 const LocalStrategy = require("passport-local").Strategy; // Mengimpor modul LocalStrategy dari passport-local
 const bcrypt = require("bcrypt"); // Mengimpor modul bcrypt untuk melakukan hashing password
 const User = require("../models/user");
+const jwt = require('jsonwebtoken');
+
+function generateToken(user) {
+  return jwt.sign(user.toObject(), process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: '1h' // Atur waktu kedaluwarsa token sesuai kebutuhan
+  });
+}
+
+
+
 async function initialize(passport, getUserByEmail, getUserById) { 
   async function authenticateUsers(email, password, done) { 
     try { 
@@ -22,6 +32,8 @@ async function initialize(passport, getUserByEmail, getUserById) {
       const isMatch = await bcrypt.compare(password, user.password); 
       
       if (isMatch) {
+        
+        
         if (user.admin) {
           return done(null, user, { admin: true });
         } else {
@@ -95,5 +107,45 @@ function ensureAuthenticated(req, res, next) {
   }
 }
 
+function verifyToken(req, res, next) {
+  const token = req.cookies.jwt;
 
-module.exports = {initialize, ensureAuthenticated};
+  if (!token) {
+    return res.redirect('/login');
+  }
+  
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
+    if (err) {
+      if (err.name === 'TokenExpiredError') {
+        // Token expired, clear cookie and render login page
+        res.clearCookie('jwt'); 
+        return res.render('login');
+      } else {
+        return res.status(500).send('Internal Server Error');
+      }
+    }
+
+    try {
+      const user = await User.findById(decoded._id); // Cari pengguna berdasarkan ID dari token
+
+      if (!user) {
+        // Jika pengguna tidak ditemukan, clear cookie dan redirect ke halaman login
+        res.clearCookie('jwt'); 
+        return res.redirect('/login');
+      }
+
+      // Jika pengguna ditemukan, update req.user dengan data pengguna yang valid
+      req.user = user;
+      next();
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+}
+
+
+
+
+
+module.exports = {initialize, ensureAuthenticated, verifyToken, generateToken};

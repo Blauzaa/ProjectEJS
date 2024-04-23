@@ -3,7 +3,7 @@ const app = express();
 const flash = require("express-flash");
 const session = require("express-session");
 const passport = require("passport");
-const {initialize, ensureAuthenticated } = require("./passport/passport-config");
+const {initialize, ensureAuthenticated, verifyToken, generateToken} = require("./passport/passport-config");
 const mongoose = require('mongoose');
 const fs = require('fs');
 const User = require("./models/user");
@@ -16,6 +16,9 @@ const multer = require('multer');
 const websiteController = require('./controllers/websiteController');
 const checkSubscriptionStatus  = require('./controllers/subsController.js');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -67,8 +70,12 @@ app.post("/login", passport.authenticate("local", {
 }), (req, res) => {
   // Setelah berhasil login, arahkan ke halaman yang sesuai berdasarkan peran pengguna (admin atau bukan)
   if (req.user.admin) {
+    const token = generateToken(req.user); 
+    res.cookie('jwt', token, { httpOnly: true });
     res.redirect("/admin");
   } else {
+    const token = generateToken(req.user); 
+    res.cookie('jwt', token, { httpOnly: true }); // Set cookie dengan token JWT
     res.redirect("/");
   }
 });
@@ -81,6 +88,7 @@ app.post("/login", passport.authenticate("local", {
 app.get('/logout', (req, res) => {
   req.logout(() => {
       req.session.destroy(() => {
+        res.clearCookie('jwt');
           req.app.locals.isLoggedIn = false; // Set isLoggedIn to false in application locals
           res.redirect('/'); // Redirect to the homepage after logout
       });
@@ -88,7 +96,7 @@ app.get('/logout', (req, res) => {
 });
 
 // Rute untuk halaman utama
-app.get('/', async (req, res) => {
+app.get('/', verifyToken , async (req, res) => {
   try {
     
     const movies = await getMovies();
@@ -96,9 +104,8 @@ app.get('/', async (req, res) => {
     const freeMovies = await getFreeMovies();
     const mainMovies = await getMainMovies();
     const isLoggedIn = !!req.user; // Check if user is logged in
-    const user = req.user;
-    const moviesBought = user ? user.alrbuy : [];
-    const userSubs = user ? user.subs : false; // Check if user has subscription
+    const moviesBought = req.user.alrbuy;
+    const userSubs = req.user.subs ;
     res.render('index', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn, moviesBought, userSubs }); // Pass movie data to the template
   } catch (error) {
     console.error(error);
@@ -108,7 +115,7 @@ app.get('/', async (req, res) => {
 
 // Rute untuk menampilkan detail film di halaman watch
 // Rute untuk menampilkan detail film di halaman watch
-app.get('/watch', async (req, res) => {
+app.get('/watch', verifyToken , async (req, res) => {
   try {
     const movieId = req.query.movieId; // Mengambil ID film dari parameter query
     const season = req.query.season; // Mengambil nilai season dari parameter query
@@ -141,7 +148,7 @@ app.get('/watch', async (req, res) => {
 
 
 // Rute untuk menampilkan detail film di halaman comingsoon
-  app.get('/comingsoon', async (req, res) => {
+  app.get('/comingsoon', verifyToken , async (req, res) => {
     try {
       const movieId = req.query.movieId; // Mengambil ID film dari parameter query
       // Gunakan ID untuk mengambil data film dari database
@@ -154,7 +161,7 @@ app.get('/watch', async (req, res) => {
     }
   });
 // Rute untuk menampilkan detail film di halaman buy
-  app.get('/buy', async (req, res) => {
+  app.get('/buy', verifyToken , async (req, res) => {
     try {
       const movieId = req.query.movieId; // Mengambil ID film dari parameter query
       // Gunakan ID untuk mengambil data film dari database
@@ -183,46 +190,73 @@ app.get('/watch', async (req, res) => {
   });
 
 
-  app.get('/payment', async (req, res) => {
-    try {
-        // Pastikan pengguna sudah login dan req.user tidak null
-        if (req.isAuthenticated()) {
-            // Dapatkan informasi pengguna dari objek req.user yang sudah di-deserialize
-            const user = req.user;
+  // Rute untuk menampilkan halaman pembayaran
+// Rute untuk menampilkan halaman pembayaran
+app.get('/payment', async (req, res) => {
+  try {
+      // Pastikan pengguna sudah login dan req.user tidak null
+      if (req.isAuthenticated()) {
+          // Dapatkan informasi pengguna dari objek req.user yang sudah di-deserialize
+          const user = req.user;
 
-            // Dapatkan ID film dari parameter query
-            const movieId = req.query.movieId;
+          // Dapatkan ID film dari parameter query
+          const movieId = req.query.movieId;
 
-            // Periksa apakah pengguna sudah membeli film tersebut sebelumnya
-            if (user.alrbuy.includes(movieId)) {
-                // Jika sudah membeli, langsung arahkan ke halaman watch dengan ID film tersebut
-                res.redirect(`/watch?movieId=${movieId}`);
-                return;
+          // Periksa apakah pengguna sudah membeli film tersebut sebelumnya
+          if (user.alrbuy.includes(movieId)) {
+              // Jika sudah membeli, langsung arahkan ke halaman watch dengan ID film tersebut
+              res.redirect(`/watch?movieId=${movieId}`);
+              return;
+          }
+
+          const selectedMovie = await Promise.all([
+            Movie.findById(movieId),
+            Movie2.findById(movieId),
+            Movie3.findById(movieId),
+            Movie4.findById(movieId)
+          ]);
+          let foundMovie;
+          for (const movie of selectedMovie) {
+            if (movie !== null) {
+              foundMovie = movie;
+              break;
             }
-
-            // Dapatkan data film dari database
-            const selectedMovie = await Movie.findById(movieId);
-
-            // Render halaman pembayaran dengan menyertakan data uang
-            res.render('payment', { selectedMovie, isLoggedIn: true, userMoney: user.uang });
-        } else {
-            // Jika pengguna belum login, redirect ke halaman login
-            res.redirect('/login');
-        }
-    } catch (error) {
-        console.error(error);
-        res.render('error'); // Handle errors appropriately
-    }
+          }
+          const isLoggedIn = !!req.user;
+          // Render halaman pembayaran dengan menyertakan data uang
+          res.render('payment', { selectedMovie: foundMovie, isLoggedIn, userMoney: user.uang });
+      } else {
+          // Jika pengguna belum login, redirect ke halaman login
+          res.redirect('/login');
+      }
+  } catch (error) {
+      console.error(error);
+      res.render('error'); // Handle errors appropriately
+  }
 });
+
+
 
 
 // Rute untuk menangani checkout
 app.post('/checkout', async (req, res) => {
   try {
     const movieId = req.query.movieId; // Mengambil ID film dari parameter query
-    const selectedMovie = await Movie.findById(movieId); // Mengambil data film dari database
+    const selectedMovie = await Promise.all([
+      Movie.findById(movieId),
+      Movie2.findById(movieId),
+      Movie3.findById(movieId),
+      Movie4.findById(movieId)
+    ]); // Mengambil data film dari database
+    let foundMovie;
+    for (const movie of selectedMovie) {
+      if (movie !== null) {
+        foundMovie = movie;
+        break;
+      }
+    }
 
-    if (!selectedMovie) {
+    if (!foundMovie) {
       return res.status(404).send('Movie not found');
     }
 
@@ -230,7 +264,7 @@ app.post('/checkout', async (req, res) => {
     const user = req.user;
 
     // Periksa apakah pengguna memiliki cukup uang untuk membeli film
-    if (user.uang < selectedMovie.harga) {
+    if (user.uang < foundMovie.harga) {
       return res.status(403).send('Insufficient funds');
     }
 
@@ -242,7 +276,7 @@ app.post('/checkout', async (req, res) => {
     }
 
     // Kurangi uang pengguna dengan harga film
-    user.uang -= selectedMovie.harga;
+    user.uang -= foundMovie.harga;
 
     // Tambahkan ID film yang sudah dibeli ke dalam array alrbuy pengguna
     user.alrbuy.push(movieId);
@@ -254,10 +288,13 @@ app.post('/checkout', async (req, res) => {
     const adminUser = await User.findOne({ email: '111@admin.com' });
 
     // Tambahkan jumlah uang yang sudah dikurangi dari pengguna ke saldo uang admin
-    adminUser.uang += selectedMovie.harga;
+    adminUser.uang += foundMovie.harga;
 
     // Simpan perubahan saldo uang admin ke dalam database
     await adminUser.save();
+
+    const token = generateToken(req.user);
+    res.cookie('jwt', token, { httpOnly: true });
 
     // Redirect pengguna ke halaman watch setelah pembayaran berhasil
     res.redirect(`/watch?movieId=${movieId}`);
@@ -275,9 +312,9 @@ app.get('/paymentsubs', async (req, res) => {
           // Dapatkan informasi pengguna dari objek req.user yang sudah di-deserialize
           const user = req.user;
 
-
+          const isLoggedIn = !!req.user;
           // Render halaman pembayaran dengan menyertakan data uang
-          res.render('paymentsubs', { usersubs: user.subs, isLoggedIn: true, userMoney: user.uang });
+          res.render('paymentsubs', { usersubs: user.subs, isLoggedIn, userMoney: user.uang });
       } else {
           // Jika pengguna belum login, redirect ke halaman login
           res.redirect('/login');
@@ -330,6 +367,9 @@ app.get('/paymentsubs', async (req, res) => {
 
         // Simpan perubahan saldo uang admin ke dalam database
         await adminUser.save();
+
+        const token = generateToken(req.user);
+        res.cookie('jwt', token, { httpOnly: true });
 
         // Redirect pengguna ke halaman watch setelah pembayaran berhasil
         res.redirect('/');
