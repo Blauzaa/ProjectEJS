@@ -95,9 +95,41 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// Rute untuk halaman utama
-app.get('/', verifyToken , async (req, res) => {
+app.get('/', verifyToken, async (req, res) => {
   try {
+    const { search } = req.query;
+    let searchResults = [];
+    let iscomingsoon = false;
+    let isadmin = false; // Tambahkan variabel isadmin dan inisialisasi dengan false
+
+    if (search) {
+      // Search in all movie models for title matching the search query
+      const movieSearchResults = await Promise.all([
+        Movie.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie2.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie3.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie4.find({ name: { $regex: search, $options: 'i' } }).exec()
+      ]);
+      // Flatten and filter out null values
+      searchResults = movieSearchResults.flat().filter(result => result !== null);
+
+      // If no search results found, log a message to console
+      if (searchResults.length === 0) {
+        console.log(`No search results found for query: ${search}`);
+      } else {
+        // Check if search results are from Movie2
+        searchResults.forEach(result => {
+          if (result instanceof Movie2) {
+            iscomingsoon = true;
+          }
+        });
+      }
+    }
+
+    // Check if user is admin based on email
+    if (req.user && req.user.email === '111@admin.com') {
+      isadmin = true;
+    }
     
     const movies = await getMovies();
     const comingSoon = await getComingSoonMovies();
@@ -105,22 +137,57 @@ app.get('/', verifyToken , async (req, res) => {
     const mainMovies = await getMainMovies();
     const isLoggedIn = !!req.user; // Check if user is logged in
     const moviesBought = req.user.alrbuy;
-    const userSubs = req.user.subs ;
-    res.render('index', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn, moviesBought, userSubs }); // Pass movie data to the template
+    const userSubs = req.user.subs;
+    res.render('index', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn, moviesBought, userSubs, searchResults, iscomingsoon, isadmin }); // Pass movie data to the template
   } catch (error) {
     console.error(error);
     res.render('error'); // Handle errors appropriately
   }
 });
 
-// Rute untuk menampilkan detail film di halaman watch
+
+
 // Rute untuk menampilkan detail film di halaman watch
 app.get('/watch', verifyToken , async (req, res) => {
   try {
+    const { search } = req.query;
+    let searchResults = [];
+    let iscomingsoon = false; // Tambahkan variabel iscomingsoon
+    let isadmin = false;
+    if (search) {
+      // Search in all movie models for title matching the search query
+      const movieSearchResults = await Promise.all([
+        Movie.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie2.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie3.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie4.find({ name: { $regex: search, $options: 'i' } }).exec()
+      ]);
+      // Flatten and filter out null values
+      searchResults = movieSearchResults.flat().filter(result => result !== null);
+
+      // If no search results found, log a message to console
+      if (searchResults.length === 0) {
+        console.log(`No search results found for query: ${search}`);
+      } else {
+        // Check if search results are from Movie2
+        searchResults.forEach(result => {
+          if (result instanceof Movie2) {
+            iscomingsoon = true;
+          }
+        });
+      }
+    }
+
+    // Check if user is admin based on email
+    if (req.user && req.user.email === '111@admin.com') {
+      isadmin = true;
+    }
+
     const movieId = req.query.movieId; // Mengambil ID film dari parameter query
     const season = req.query.season; // Mengambil nilai season dari parameter query
     const episode = req.query.episode; // Mengambil nilai episode dari parameter query
-    
+    const moviesBought = req.user.alrbuy;
+    const userSubs = req.user.subs;
     // Gunakan ID untuk mencari data film dari keempat koleksi
     const selectedMovie = await Promise.all([
       Movie.findById(movieId),
@@ -139,7 +206,7 @@ app.get('/watch', verifyToken , async (req, res) => {
     }
     
     const isLoggedIn = !!req.user; // Check if user is logged in
-    res.render('watch', { selectedMovie: foundMovie, isLoggedIn, season, episode }); // Pass movie data to the template
+    res.render('watch', { selectedMovie: foundMovie, isLoggedIn, season, episode, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin }); // Pass movie data to the template
   } catch (error) {
     console.error(error);
     res.render('error'); // Handle errors appropriately
@@ -147,22 +214,103 @@ app.get('/watch', verifyToken , async (req, res) => {
 });
 
 
+
 // Rute untuk menampilkan detail film di halaman comingsoon
-  app.get('/comingsoon', verifyToken , async (req, res) => {
-    try {
-      const movieId = req.query.movieId; // Mengambil ID film dari parameter query
-      // Gunakan ID untuk mengambil data film dari database
-      const selectedMovie = await Movie2.findById(movieId);
-      const isLoggedIn = !!req.user; // Check if user is logged in
-      res.render('comingsoon', { selectedMovie, isLoggedIn }); // Pass movie data to the template
-    } catch (error) {
-      console.error(error);
-      res.render('error'); // Handle errors appropriately
+app.get('/comingsoon', verifyToken , async (req, res) => {
+  try {
+    const { search } = req.query;
+    let searchResults = [];
+    let iscomingsoon = false; // Tambahkan variabel iscomingsoon
+    let isadmin = false;
+    if (search) {
+      // Search in all movie models for title matching the search query
+      const movieSearchResults = await Promise.all([
+        Movie.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie2.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie3.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie4.find({ name: { $regex: search, $options: 'i' } }).exec()
+      ]);
+      // Flatten and filter out null values
+      searchResults = movieSearchResults.flat().filter(result => result !== null);
+
+      // If no search results found, log a message to console
+      if (searchResults.length === 0) {
+        console.log(`No search results found for query: ${search}`);
+      } else {
+        // Check if search results are from Movie2
+        searchResults.forEach(result => {
+          if (result instanceof Movie2) {
+            iscomingsoon = true;
+          }
+        });
+      }
     }
-  });
+        // Check if user is admin based on email
+  if (req.user && req.user.email === '111@admin.com') {
+    isadmin = true;
+  }
+    const movieId = req.query.movieId; // Mengambil ID film dari parameter query
+    // Gunakan ID untuk mengambil data film dari database
+    const selectedMovie = await Promise.all([
+      Movie.findById(movieId),
+      Movie2.findById(movieId),
+      Movie3.findById(movieId),
+      Movie4.findById(movieId)
+    ]);
+
+    // Loop through the result to find the movie from the first collection where it's found
+    let foundMovie;
+    for (const movie of selectedMovie) {
+      if (movie !== null) {
+        foundMovie = movie;
+        break;
+      }
+    }
+    const isLoggedIn = !!req.user; // Check if user is logged in
+    const moviesBought = req.user.alrbuy;
+    const userSubs = req.user.subs;
+    res.render('comingsoon', { selectedMovie: foundMovie, isLoggedIn, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin }); // Pass movie data to the template
+  } catch (error) {
+    console.error(error);
+    res.render('error'); // Handle errors appropriately
+  }
+});
 // Rute untuk menampilkan detail film di halaman buy
   app.get('/buy', verifyToken , async (req, res) => {
     try {
+      const { search } = req.query;
+    let searchResults = [];
+    let iscomingsoon = false; // Tambahkan variabel iscomingsoon
+    let isadmin = false;
+    if (search) {
+      // Search in all movie models for title matching the search query
+      const movieSearchResults = await Promise.all([
+        Movie.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie2.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie3.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie4.find({ name: { $regex: search, $options: 'i' } }).exec()
+      ]);
+      // Flatten and filter out null values
+      searchResults = movieSearchResults.flat().filter(result => result !== null);
+
+      // If no search results found, log a message to console
+      if (searchResults.length === 0) {
+        console.log(`No search results found for query: ${search}`);
+      } else {
+        // Check if search results are from Movie2
+        searchResults.forEach(result => {
+          if (result instanceof Movie2) {
+            iscomingsoon = true;
+          }
+        });
+      }
+    }
+        // Check if user is admin based on email
+    if (req.user && req.user.email === '111@admin.com') {
+      isadmin = true;
+    }
+    const moviesBought = req.user.alrbuy;
+    const userSubs = req.user.subs;
       const movieId = req.query.movieId; // Mengambil ID film dari parameter query
       // Gunakan ID untuk mengambil data film dari database
          // Gunakan ID untuk mencari data film dari keempat koleksi
@@ -182,7 +330,7 @@ app.get('/watch', verifyToken , async (req, res) => {
       }
     }
       const isLoggedIn = !!req.user; // Check if user is logged in
-      res.render('buy', { selectedMovie: foundMovie, isLoggedIn }); // Pass movie data to the template
+      res.render('buy', { selectedMovie: foundMovie, isLoggedIn, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin }); // Pass movie data to the template
     } catch (error) {
       console.error(error);
       res.render('error'); // Handle errors appropriately
@@ -194,6 +342,37 @@ app.get('/watch', verifyToken , async (req, res) => {
 // Rute untuk menampilkan halaman pembayaran
 app.get('/payment', async (req, res) => {
   try {
+    const { search } = req.query;
+    let searchResults = [];
+    let iscomingsoon = false; // Tambahkan variabel iscomingsoon
+    let isadmin = false;
+    if (search) {
+      // Search in all movie models for title matching the search query
+      const movieSearchResults = await Promise.all([
+        Movie.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie2.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie3.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie4.find({ name: { $regex: search, $options: 'i' } }).exec()
+      ]);
+      // Flatten and filter out null values
+      searchResults = movieSearchResults.flat().filter(result => result !== null);
+
+      // If no search results found, log a message to console
+      if (searchResults.length === 0) {
+        console.log(`No search results found for query: ${search}`);
+      } else {
+        // Check if search results are from Movie2
+        searchResults.forEach(result => {
+          if (result instanceof Movie2) {
+            iscomingsoon = true;
+          }
+        });
+      }
+    }
+        // Check if user is admin based on email
+        if (req.user && req.user.email === '111@admin.com') {
+          isadmin = true;
+        }
       // Pastikan pengguna sudah login dan req.user tidak null
       if (req.isAuthenticated()) {
           // Dapatkan informasi pengguna dari objek req.user yang sudah di-deserialize
@@ -222,9 +401,12 @@ app.get('/payment', async (req, res) => {
               break;
             }
           }
+          
+          const moviesBought = req.user.alrbuy;
+          const userSubs = req.user.subs;
           const isLoggedIn = !!req.user;
           // Render halaman pembayaran dengan menyertakan data uang
-          res.render('payment', { selectedMovie: foundMovie, isLoggedIn, userMoney: user.uang });
+          res.render('payment', { selectedMovie: foundMovie, isLoggedIn, userMoney: user.uang, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin});
       } else {
           // Jika pengguna belum login, redirect ke halaman login
           res.redirect('/login');
@@ -307,14 +489,47 @@ app.post('/checkout', async (req, res) => {
 
 app.get('/paymentsubs', async (req, res) => {
   try {
+    const { search } = req.query;
+    let searchResults = [];
+    let iscomingsoon = false; // Tambahkan variabel iscomingsoon
+    let isadmin = false;
+    if (search) {
+      // Search in all movie models for title matching the search query
+      const movieSearchResults = await Promise.all([
+        Movie.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie2.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie3.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie4.find({ name: { $regex: search, $options: 'i' } }).exec()
+      ]);
+      // Flatten and filter out null values
+      searchResults = movieSearchResults.flat().filter(result => result !== null);
+
+      // If no search results found, log a message to console
+      if (searchResults.length === 0) {
+        console.log(`No search results found for query: ${search}`);
+      } else {
+        // Check if search results are from Movie2
+        searchResults.forEach(result => {
+          if (result instanceof Movie2) {
+            iscomingsoon = true;
+          }
+        });
+      }
+    }
+        // Check if user is admin based on email
+        if (req.user && req.user.email === '111@admin.com') {
+          isadmin = true;
+        }
       // Pastikan pengguna sudah login dan req.user tidak null
       if (req.isAuthenticated()) {
           // Dapatkan informasi pengguna dari objek req.user yang sudah di-deserialize
           const user = req.user;
-
+          const movieId = req.query.movieId;
           const isLoggedIn = !!req.user;
+          const moviesBought = req.user.alrbuy;
+          const userSubs = req.user.subs;
           // Render halaman pembayaran dengan menyertakan data uang
-          res.render('paymentsubs', { usersubs: user.subs, isLoggedIn, userMoney: user.uang });
+          res.render('paymentsubs', { usersubs: user.subs, isLoggedIn, userMoney: user.uang, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin });
       } else {
           // Jika pengguna belum login, redirect ke halaman login
           res.redirect('/login');
@@ -382,6 +597,37 @@ app.get('/paymentsubs', async (req, res) => {
 
 app.get('/admin', async (req, res) => {
   try {
+    const { search } = req.query;
+    let searchResults = [];
+    let iscomingsoon = false; // Tambahkan variabel iscomingsoon
+    let isadmin = false
+    if (search) {
+      // Search in all movie models for title matching the search query
+      const movieSearchResults = await Promise.all([
+        Movie.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie2.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie3.find({ name: { $regex: search, $options: 'i' } }).exec(),
+        Movie4.find({ name: { $regex: search, $options: 'i' } }).exec()
+      ]);
+      // Flatten and filter out null values
+      searchResults = movieSearchResults.flat().filter(result => result !== null);
+
+      // If no search results found, log a message to console
+      if (searchResults.length === 0) {
+        console.log(`No search results found for query: ${search}`);
+      } else {
+        // Check if search results are from Movie2
+        searchResults.forEach(result => {
+          if (result instanceof Movie2) {
+            iscomingsoon = true;
+          }
+        });
+      }
+    }
+        // Check if user is admin based on email
+        if (req.user && req.user.email === '111@admin.com') {
+          isadmin = true;
+        }
     if (req.isAuthenticated() && req.user.email === '111@admin.com') {
       // Jika pengguna terautentikasi dan alamat emailnya adalah admin
       const movies1 = await Movie.find();
@@ -392,7 +638,9 @@ app.get('/admin', async (req, res) => {
       const totalUsers = await websiteController.getTotalUsers();
       const totalUang = await websiteController.getAdminUang();
       const isLoggedIn = true; // Set isLoggedIn menjadi true karena pengguna terautentikasi
-      res.render('admin', { movies1, movies2, movies3, movies4, totalMovies, totalUsers, totalUang, isLoggedIn });
+      const moviesBought = req.user.alrbuy;
+      const userSubs = req.user.subs;
+      res.render('admin', { movies1, movies2, movies3, movies4, totalMovies, totalUsers, totalUang, isLoggedIn, searchResults, iscomingsoon, moviesBought, userSubs, isadmin });
     } else {
       // Jika pengguna tidak terautentikasi atau bukan admin, redirect atau tampilkan pesan akses ditolak
       res.redirect('/login');

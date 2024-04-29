@@ -131,4 +131,26 @@ function deleteMovie(movieId) {
   }
 }
 
+//untuk search 
+document.addEventListener('DOMContentLoaded', function() {
+  const searchContainer = document.querySelector('.search-container');
+  const searchResults = document.querySelector('.search_results');
 
+  // Function to hide search results
+  function hideSearchResults() {
+      searchResults.style.display = 'none';
+  }
+
+  // Event listener to hide search results when clicking outside the container
+  document.addEventListener('click', function(event) {
+      const isClickInsideSearchContainer = searchContainer.contains(event.target);
+      if (!isClickInsideSearchContainer) {
+          hideSearchResults();
+      }
+  });
+
+  // Event listener to prevent hiding search results when clicking inside the results container
+  searchResults.addEventListener('click', function(event) {
+      event.stopPropagation();
+  });
+});

@@ -12,9 +12,100 @@
 <body>
 
     <% if (isLoggedIn) { %>
-        <%- include('layouts/header_logout.ejs') %> 
+        <header>
+            <a href="" class="logo">
+                <i class='bx bxs-movie'></i> Twice
+            </a>
+            <div class="bx bx-menu" id="menu-icon"></div>
+        
+            <ul class="navbar">
+                <li><a href="/#home" class="home-active">Home</a></li>
+                <li><a href="/#movies">Movies</a></li>
+                <li><a href="/#coming">Coming Soon</a></li>
+                <li><a href="/#free">Free Movies</a></li>
+                <div class="search-container">
+                    <form action="/payment" method="get">
+                        <% if (movieId) { %>
+                            <input type="hidden" name="movieId" value="<%= movieId %>">
+                        <% } %>
+                        <input type="text" placeholder="Search.." name="search">
+                        <button type="submit"><i class='bx bx-search'></i></button>
+                    </form>
+        
+                    <% if (searchResults.length > 0) { %>
+                        <div class="search_results">
+                            <% searchResults.forEach(result => { %>
+                                <div class="search_information">
+                                    <% if (isLoggedIn && iscomingsoon) { %>
+                                        <a href="/comingsoon?movieId=<%= result._id %>"><img src="<%= result.poster %>" alt="<%= result.name %>"></a>
+                                    <% } else if (isLoggedIn && (moviesBought.includes(result._id.toString()) || userSubs)) { %>
+                                        <a href="/watch?movieId=<%= result._id %>"><img src="<%= result.poster %>" alt="<%= result.name %>"></a>
+                                    <% } else { %>
+                                        <a href="/buy?movieId=<%= result._id %>"><img src="<%= result.poster %>" alt="<%= result.name %>"></a>
+                                    <% } %>
+                                    <div>
+                                        <h1><%= result.name %></h1>
+                                        <h2><%= result.genre %></h2>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <div class="search_information" style="display: none;"></div>
+                    <% } %>
+                </div>
+            </ul>
+            <% if (isadmin) { %>
+                <a href="/admin" class="btn">Admin</a>
+                <% } %>
+            <a href="/logout" class="btn">Logout</a>
+        </header>
+        
+
     <% } else { %>
-        <%- include('layouts/header_login.ejs') %> 
+        <header>
+            <a href="" class="logo">
+                <i class='bx bxs-movie'></i> Twice
+            </a>
+            <div class="bx bx-menu" id="menu-icon"></div>
+        
+            <ul class="navbar">
+                <li><a href="/#home" class="home-active">Home</a></li>
+                <li><a href="/#movies">Movies</a></li>
+                <li><a href="/#coming">Coming Soon</a></li>
+                <li><a href="/#free">Free Movies</a></li>
+                <div class="search-container">
+                    <form action="/payment" method="get">
+                        <input type="text" placeholder="Search.." name="search">
+                        <button type="submit"><i class='bx bx-search'></i></button>
+                    </form>
+        
+                    <% if (searchResults.length > 0) { %>
+                        <div class="search_results">
+                            <% searchResults.forEach(result => { %>
+                                <div class="search_information">
+                                    <% if (isLoggedIn && iscomingsoon) { %>
+                                        <a href="/comingsoon?movieId=<%= result._id %>"><img src="<%= result.poster %>" alt="<%= result.name %>"></a>
+                                    <% } else if (isLoggedIn && (moviesBought.includes(result._id.toString()) || userSubs)) { %>
+                                        <a href="/watch?movieId=<%= result._id %>"><img src="<%= result.poster %>" alt="<%= result.name %>"></a>
+                                    <% } else { %>
+                                        <a href="/buy?movieId=<%= result._id %>"><img src="<%= result.poster %>" alt="<%= result.name %>"></a>
+                                    <% } %>
+                                    <div>
+                                        <h1><%= result.name %></h1>
+                                        <h2><%= result.genre %></h2>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <div class="search_information" style="display: none;"></div>
+                    <% } %>
+                </div>
+            </ul>
+            <a href="/login" class="btn">Log In</a>
+        </header>
+
     <% } %>
 
     <% if (selectedMovie) { %>
