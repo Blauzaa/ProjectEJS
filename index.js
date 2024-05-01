@@ -17,6 +17,7 @@ const websiteController = require('./controllers/websiteController');
 const checkSubscriptionStatus  = require('./controllers/subsController.js');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 app.use(cookieParser());
 
@@ -130,7 +131,7 @@ app.get('/', verifyToken, async (req, res) => {
     if (req.user && req.user.email === '111@admin.com') {
       isadmin = true;
     }
-    
+
     const movies = await getMovies();
     const comingSoon = await getComingSoonMovies();
     const freeMovies = await getFreeMovies();
@@ -138,7 +139,19 @@ app.get('/', verifyToken, async (req, res) => {
     const isLoggedIn = !!req.user; // Check if user is logged in
     const moviesBought = req.user.alrbuy;
     const userSubs = req.user.subs;
-    res.render('index', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn, moviesBought, userSubs, searchResults, iscomingsoon, isadmin }); // Pass movie data to the template
+    // untuk menghitung sisa hari langganan
+    const user = req.user;
+    const userId = req.user._id;
+    const now = new Date();
+    const subEndDate = new Date(user.subsenddate);
+    const diffTime = subEndDate - now;
+    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if(diffDays < 0){
+      const diffday = 0;
+      diffDays = diffday;
+
+    }
+    res.render('index', { movies, comingSoon, freeMovies, mainMovies, isLoggedIn, moviesBought, userSubs, searchResults, iscomingsoon, isadmin, userId, user, diffDays  }); // Pass movie data to the template
   } catch (error) {
     console.error(error);
     res.render('error'); // Handle errors appropriately
@@ -204,9 +217,20 @@ app.get('/watch', verifyToken , async (req, res) => {
         break;
       }
     }
-    
+        // untuk menghitung sisa hari langganan
+    const user = req.user;
+    const userId = req.user._id;
+    const now = new Date();
+    const subEndDate = new Date(user.subsenddate);
+    const diffTime = subEndDate - now;
+    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if(diffDays < 0){
+      const diffday = 0;
+      diffDays = diffday;
+
+    }
     const isLoggedIn = !!req.user; // Check if user is logged in
-    res.render('watch', { selectedMovie: foundMovie, isLoggedIn, season, episode, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin }); // Pass movie data to the template
+    res.render('watch', { selectedMovie: foundMovie, isLoggedIn, season, episode, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin, user, userId, diffDays }); // Pass movie data to the template
   } catch (error) {
     console.error(error);
     res.render('error'); // Handle errors appropriately
@@ -266,10 +290,22 @@ app.get('/comingsoon', verifyToken , async (req, res) => {
         break;
       }
     }
+        // untuk menghitung sisa hari langganan
+    const user = req.user;
+    const userId = req.user._id;
+    const now = new Date();
+    const subEndDate = new Date(user.subsenddate);
+    const diffTime = subEndDate - now;
+    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if(diffDays < 0){
+      const diffday = 0;
+      diffDays = diffday;
+
+    }
     const isLoggedIn = !!req.user; // Check if user is logged in
     const moviesBought = req.user.alrbuy;
     const userSubs = req.user.subs;
-    res.render('comingsoon', { selectedMovie: foundMovie, isLoggedIn, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin }); // Pass movie data to the template
+    res.render('comingsoon', { selectedMovie: foundMovie, isLoggedIn, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin, user, userId, diffDays }); // Pass movie data to the template
   } catch (error) {
     console.error(error);
     res.render('error'); // Handle errors appropriately
@@ -329,8 +365,20 @@ app.get('/comingsoon', verifyToken , async (req, res) => {
         break;
       }
     }
+        // untuk menghitung sisa hari langganan
+    const user = req.user;
+    const userId = req.user._id;
+    const now = new Date();
+    const subEndDate = new Date(user.subsenddate);
+    const diffTime = subEndDate - now;
+    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if(diffDays < 0){
+      const diffday = 0;
+      diffDays = diffday;
+
+    }
       const isLoggedIn = !!req.user; // Check if user is logged in
-      res.render('buy', { selectedMovie: foundMovie, isLoggedIn, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin }); // Pass movie data to the template
+      res.render('buy', { selectedMovie: foundMovie, isLoggedIn, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin, userId, user, diffDays }); // Pass movie data to the template
     } catch (error) {
       console.error(error);
       res.render('error'); // Handle errors appropriately
@@ -401,12 +449,23 @@ app.get('/payment', async (req, res) => {
               break;
             }
           }
-          
+              // untuk menghitung sisa hari langganan
+
+          const userId = req.user._id;
+          const now = new Date();
+          const subEndDate = new Date(user.subsenddate);
+          const diffTime = subEndDate - now;
+          let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          if(diffDays < 0){
+            const diffday = 0;
+            diffDays = diffday;
+      
+          }
           const moviesBought = req.user.alrbuy;
           const userSubs = req.user.subs;
           const isLoggedIn = !!req.user;
           // Render halaman pembayaran dengan menyertakan data uang
-          res.render('payment', { selectedMovie: foundMovie, isLoggedIn, userMoney: user.uang, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin});
+          res.render('payment', { selectedMovie: foundMovie, isLoggedIn, userMoney: user.uang, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin, user, userId, diffDays});
       } else {
           // Jika pengguna belum login, redirect ke halaman login
           res.redirect('/login');
@@ -528,8 +587,20 @@ app.get('/paymentsubs', async (req, res) => {
           const isLoggedIn = !!req.user;
           const moviesBought = req.user.alrbuy;
           const userSubs = req.user.subs;
+              // untuk menghitung sisa hari langganan
+
+          const userId = req.user._id;
+          const now = new Date();
+          const subEndDate = new Date(user.subsenddate);
+          const diffTime = subEndDate - now;
+          let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          if(diffDays < 0){
+            const diffday = 0;
+            diffDays = diffday;
+      
+          }
           // Render halaman pembayaran dengan menyertakan data uang
-          res.render('paymentsubs', { usersubs: user.subs, isLoggedIn, userMoney: user.uang, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin });
+          res.render('paymentsubs', { usersubs: user.subs, isLoggedIn, userMoney: user.uang, searchResults, iscomingsoon, moviesBought, userSubs, movieId, isadmin, user, userId, diffDays});
       } else {
           // Jika pengguna belum login, redirect ke halaman login
           res.redirect('/login');
@@ -541,57 +612,74 @@ app.get('/paymentsubs', async (req, res) => {
 });
 
   // Rute untuk menangani checkout
-  app.post('/checkoutsubs', async (req, res) => {
-    try {
-        const user = req.user;
+app.post('/checkoutsubs', async (req, res) => {
+  try {
+      const user = req.user;
 
-        // Periksa apakah pengguna memiliki cukup uang untuk membeli subs
-        if (user.uang < 50) {
-            return res.status(403).send('Insufficient funds');
-        }
+      // Periksa apakah pengguna memiliki cukup uang untuk membeli subs
+      if (user.uang < 50) {
+          return res.status(403).send('Insufficient funds');
+      }
 
-        // Periksa apakah pengguna sudah pernah membeli subs
-        if (user.subs) {
-            // Jika sudah, langsung arahkan ke halaman /
-            res.redirect('/');
-            return;
-        }
+      // Periksa apakah pengguna sudah pernah membeli subs
+      if (user.subs) {
+          // Jika sudah, tambahkan 1 bulan ke tanggal subsenddate
+          const oneMonthLater = new Date(user.subsenddate);
+          oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
+          user.subsenddate = oneMonthLater;
+          // Kurangi uang pengguna dengan harga langganan
+          user.uang -= 50;
 
-        // Kurangi uang pengguna dengan harga subs
-        user.uang -= 50;
+          // Cari akun admin yang terkait
+          const adminUser = await User.findOne({ email: '111@admin.com' });
 
-        // ubah user.subs menjadi true
-        user.subs = true;
+          // Tambahkan jumlah uang yang sudah dikurangi dari pengguna ke saldo uang admin
+          adminUser.uang += 50;
 
-        // Set tanggal checkout ke subsstartdate
-        user.subsstartdate = new Date();
+          // Simpan perubahan saldo uang admin ke dalam database
+          await adminUser.save();
+          // Simpan perubahan pada pengguna ke dalam database
+          await user.save();
 
-        // Hitung tanggal subsenddate satu bulan ke depan
-        const oneMonthLater = new Date();
-        oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
-        user.subsenddate = oneMonthLater;
+          // Redirect pengguna ke halaman watch
+          return res.redirect('/');
+      }
 
-        // Simpan perubahan pada pengguna ke dalam database
-        await user.save();
+      // Kurangi uang pengguna dengan harga subs
+      user.uang -= 50;
 
-        // Cari akun admin yang terkait
-        const adminUser = await User.findOne({ email: '111@admin.com' });
+      // Ubah user.subs menjadi true
+      user.subs = true;
 
-        // Tambahkan jumlah uang yang sudah dikurangi dari pengguna ke saldo uang admin
-        adminUser.uang += 50;
+      // Set tanggal checkout ke subsstartdate
+      user.subsstartdate = new Date();
 
-        // Simpan perubahan saldo uang admin ke dalam database
-        await adminUser.save();
+      // Hitung tanggal subsenddate satu bulan ke depan
+      const oneMonthLater = new Date();
+      oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
+      user.subsenddate = oneMonthLater;
 
-        const token = generateToken(req.user);
-        res.cookie('jwt', token, { httpOnly: true });
+      // Simpan perubahan pada pengguna ke dalam database
+      await user.save();
 
-        // Redirect pengguna ke halaman watch setelah pembayaran berhasil
-        res.redirect('/');
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
+      // Cari akun admin yang terkait
+      const adminUser = await User.findOne({ email: '111@admin.com' });
+
+      // Tambahkan jumlah uang yang sudah dikurangi dari pengguna ke saldo uang admin
+      adminUser.uang += 50;
+
+      // Simpan perubahan saldo uang admin ke dalam database
+      await adminUser.save();
+
+      const token = generateToken(req.user);
+      res.cookie('jwt', token, { httpOnly: true });
+
+      // Redirect pengguna ke halaman watch setelah pembayaran berhasil
+      res.redirect('/');
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+  }
 });
 
 
@@ -640,7 +728,14 @@ app.get('/admin', async (req, res) => {
       const isLoggedIn = true; // Set isLoggedIn menjadi true karena pengguna terautentikasi
       const moviesBought = req.user.alrbuy;
       const userSubs = req.user.subs;
-      res.render('admin', { movies1, movies2, movies3, movies4, totalMovies, totalUsers, totalUang, isLoggedIn, searchResults, iscomingsoon, moviesBought, userSubs, isadmin });
+          // untuk menghitung sisa hari langganan
+    const user = req.user;
+    const userId = req.user._id;
+    const now = new Date();
+    const subEndDate = new Date(user.subsenddate);
+    const diffTime = subEndDate - now;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      res.render('admin', { movies1, movies2, movies3, movies4, totalMovies, totalUsers, totalUang, isLoggedIn, searchResults, iscomingsoon, moviesBought, userSubs, isadmin, user, userId, diffDays }); // Pass movie data to the template
     } else {
       // Jika pengguna tidak terautentikasi atau bukan admin, redirect atau tampilkan pesan akses ditolak
       res.redirect('/login');
@@ -694,6 +789,87 @@ app.get('/getmovie/:id', async (req, res) => {
 // check subs status
 checkSubscriptionStatus();
 setInterval(checkSubscriptionStatus, 24 * 60 * 60 * 1000);
+
+
+
+app.get('/api/user/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId; // Menggunakan req.params.userId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: 'Invalid userId' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
+app.post('/updateprofile', async (req, res) => {
+  try {
+    const userId = req.body.userId; // Ambil id pengguna dari formulir
+
+    const { name, password, passwordbaru, passwordconfirm } = req.body; // Ambil data dari formulir
+
+    // Perbarui data pengguna dalam database, termasuk nama
+    const updatedUserData = {};
+    
+    // Cek apakah pengguna mencoba mengubah nama menjadi kosong
+    if (!name) {
+      // Cari pengguna berdasarkan userId
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).send('Pengguna tidak ditemukan');
+      }
+      // Set name sama dengan nama pengguna sebelumnya
+      updatedUserData.name = user.name;
+      // Tetapkan pesan kesalahan
+      req.flash('error', 'Nama tidak boleh kosong');
+    } else {
+      updatedUserData.name = name;
+    }
+
+    // Cek apakah pengguna ingin mengubah password
+    if (passwordbaru && passwordconfirm) {
+      // Cek apakah pengguna memasukkan password saat ini dengan benar
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).send('Pengguna tidak ditemukan');
+      }
+
+      const isPasswordValid = await user.comparePassword(password); // Metode comparePassword dari model User
+      if (!isPasswordValid) {
+        req.flash('error', 'Password saat ini salah');
+      }
+
+      // Periksa apakah password baru dan konfirmasi password cocok
+      if (passwordbaru !== passwordconfirm) {
+        req.flash('error', 'Password baru tidak cocok dengan konfirmasi password');
+      }
+
+      // Hash password baru sebelum disimpan
+      const hashedPassword = await bcrypt.hash(passwordbaru, 10);
+      updatedUserData.password = hashedPassword;
+    }
+
+    // Perbarui profil pengguna dalam database
+    await User.findByIdAndUpdate(userId, updatedUserData);
+
+    res.redirect('/'); // Redirect ke halaman profil setelah berhasil mengupdate profil
+  } catch (error) {
+    console.error('Error while updating profile:', error);
+    res.status(500).send('Terjadi kesalahan saat mengupdate profil');
+  }
+});
+
+
 
 
 mongoose.connect(mongoURI, {})

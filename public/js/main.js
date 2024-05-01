@@ -136,6 +136,25 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const dropdownButton = document.querySelector('.dropdown summary');
+  const nameInput = document.getElementById('name');
+  
+  dropdownButton.addEventListener('click', async () => {
+      try {
+        const dropdown = document.querySelector('.dropdown');
+        const userId = dropdown.dataset.userid; // Ambil userId dari dataset
+
+        const response = await fetch(`/api/user/${userId}`);// Ganti 'userId' dengan ID pengguna yang sebenarnya
+        const user = await response.json();
+        nameInput.value = user.name; // Diasumsikan objek pengguna memiliki properti 'name'
+      } catch (error) {
+          console.error('Error fetching user data:', error);
+      }
+  });
+});
+
+
 
 
 

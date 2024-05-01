@@ -59,7 +59,32 @@
             <% if (isadmin) { %>
                 <a href="/admin" class="btn">Admin</a>
                 <% } %>
-            <a href="/logout" class="btn">Logout</a>
+                <details data-userid="<%= userId %>"  class="dropdown">
+                    <summary role="button">
+                      <a class="button" > <i class='bx bx-user' ></i> Profile</a>
+                    </summary>
+                    <form action="/updateprofile" method="POST">
+                        <input type="hidden" name="userId" value="<%= userId %>">
+                        <ul>
+                            <li> 
+                                <% if (messages.error) { %>
+                                  <strong class="error" style=" color: red;"><%= messages.error %> </strong>
+                              <% } %> 
+                            </li>
+                            <li><a href="#" >Email: <%= user.email.length > 20 ? user.email.substring(0, 20) + '...' : user.email %> </a></li>
+                            <li><input type="text" id="name" name="name" placeholder="Nama"></li>
+                            <li><input type="password" name="password" placeholder="Password Sekarang"></li>
+                            <li><input type="password" name="passwordbaru" placeholder="Password Baru"></li>
+                            <li><input type="password" name="passwordconfirm" placeholder="Confirm Password"></li>
+                            <li><a href="#">Uang: $<%= user.uang %> </a></li>
+                            <li><a href="#">Subscribe: <%= diffDays %> Days </a></li>
+                            <li><button type="submit">Update Profile</button></li>
+                            <li><a href="/logout">Logout</a></li>
+                            
+                        </ul>
+                      </form>
+                      
+                </details>
         </header>
         
 
