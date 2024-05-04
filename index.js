@@ -82,9 +82,6 @@ app.post("/login", passport.authenticate("local", {
 });
 
 
-
-
-
 // Rute untuk logout pengguna
 app.get('/logout', (req, res) => {
   req.logout(() => {
@@ -728,13 +725,19 @@ app.get('/admin', async (req, res) => {
       const isLoggedIn = true; // Set isLoggedIn menjadi true karena pengguna terautentikasi
       const moviesBought = req.user.alrbuy;
       const userSubs = req.user.subs;
-          // untuk menghitung sisa hari langganan
-    const user = req.user;
-    const userId = req.user._id;
-    const now = new Date();
-    const subEndDate = new Date(user.subsenddate);
-    const diffTime = subEndDate - now;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const user = req.user;
+              // untuk menghitung sisa hari langganan
+
+              const userId = req.user._id;
+              const now = new Date();
+              const subEndDate = new Date(user.subsenddate);
+              const diffTime = subEndDate - now;
+              let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              if(diffDays < 0){
+                const diffday = 0;
+                diffDays = diffday;
+          
+              }
       res.render('admin', { movies1, movies2, movies3, movies4, totalMovies, totalUsers, totalUang, isLoggedIn, searchResults, iscomingsoon, moviesBought, userSubs, isadmin, user, userId, diffDays }); // Pass movie data to the template
     } else {
       // Jika pengguna tidak terautentikasi atau bukan admin, redirect atau tampilkan pesan akses ditolak
@@ -868,8 +871,6 @@ app.post('/updateprofile', async (req, res) => {
     res.status(500).send('Terjadi kesalahan saat mengupdate profil');
   }
 });
-
-
 
 
 mongoose.connect(mongoURI, {})
